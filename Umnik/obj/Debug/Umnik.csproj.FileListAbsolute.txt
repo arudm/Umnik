@@ -1,0 +1,13 @@
+F:\CSProjects\Umnik\Umnik\bin\Debug\Umnik.exe.config
+F:\CSProjects\Umnik\Umnik\bin\Debug\Umnik.exe
+F:\CSProjects\Umnik\Umnik\bin\Debug\Umnik.pdb
+F:\CSProjects\Umnik\Umnik\obj\Debug\Umnik.csproj.AssemblyReference.cache
+F:\CSProjects\Umnik\Umnik\obj\Debug\Umnik.Properties.Resources.resources
+F:\CSProjects\Umnik\Umnik\obj\Debug\Umnik.csproj.GenerateResource.cache
+F:\CSProjects\Umnik\Umnik\obj\Debug\Umnik.csproj.CoreCompileInputs.cache
+F:\CSProjects\Umnik\Umnik\obj\Debug\Umnik.csproj.CopyComplete
+F:\CSProjects\Umnik\Umnik\obj\Debug\Umnik.exe
+F:\CSProjects\Umnik\Umnik\obj\Debug\Umnik.pdb
+F:\CSProjects\Umnik\Umnik\obj\Debug\Umnik.Map.resources
+F:\CSProjects\Umnik\Umnik\bin\Debug\GMap.NET.Core.dll
+F:\CSProjects\Umnik\Umnik\bin\Debug\GMap.NET.WindowsForms.dll
