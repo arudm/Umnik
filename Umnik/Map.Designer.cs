@@ -70,6 +70,7 @@ namespace Umnik
             this.gmap.Size = new System.Drawing.Size(1073, 505);
             this.gmap.TabIndex = 0;
             this.gmap.Zoom = 0D;
+            this.gmap.OnMarkerClick += new GMap.NET.WindowsForms.MarkerClick(this.gmap_OnMarkerClick);
             this.gmap.Load += new System.EventHandler(this.gMapControl1_Load);
             this.gmap.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.gmap_MouseDoubleClick);
             // 

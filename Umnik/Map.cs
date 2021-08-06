@@ -286,6 +286,12 @@ namespace Umnik
             }
         }
 
-        
+        private void gmap_OnMarkerClick(GMapMarker item, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Right)
+            {
+                PositionsForUser.Markers.Remove(item);
+            }
+        }
     }
 }
