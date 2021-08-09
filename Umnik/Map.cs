@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.IO;
+using System.Xml;
 using System.Device.Location;
 
 using GMap.NET;
@@ -15,8 +16,7 @@ using GMap.NET.MapProviders;
 using GMap.NET.WindowsForms;
 using GMap.NET.WindowsForms.Markers;
 using GMap.NET.WindowsForms.ToolTips;
-
-
+using System.Globalization;
 
 namespace Umnik
 {
@@ -30,8 +30,16 @@ namespace Umnik
         {
             public double x { get; set; }
             public double y { get; set; }
+            public double ele { get; set; }
+            public CPoint () { }
 
             public CPoint(double _x, double _y) { x = _x; y = _y; }
+            public CPoint(double _x, double _y, double _ele)
+            {
+                x = _x;
+                y = _y;
+                ele = _ele;
+            }
         }
         #endregion
 
@@ -81,7 +89,7 @@ namespace Umnik
 
             // Загрузка этой точки на карте
             GMap.NET.GMaps.Instance.Mode = GMap.NET.AccessMode.ServerOnly;
-            gmap.Position = new GMap.NET.PointLatLng(47.2226466, 38.8391624);
+            gmap.Position = new GMap.NET.PointLatLng(43.9151144529437, 42.7288770675659);
 
             // Создаём новый список маркеров
             GMapOverlay markersOverlay = new GMapOverlay("markers");
@@ -99,12 +107,7 @@ namespace Umnik
             textBox1.Text = gmap.Zoom.ToString();
         }
 
-        private void button1_Click(object sender, EventArgs e)
-        {
-            MessageBox.Show("Выход из программы");
-            Close();
-        }
-
+        
         private void button2_Click(object sender, EventArgs e)
         {
             try
@@ -292,6 +295,82 @@ namespace Umnik
             {
                 PositionsForUser.Markers.Remove(item);
             }
+        }
+        public static double GetDouble(string value, double defaultValue)
+        {
+            double result;
+
+            //Try parsing in the current culture
+            if (!double.TryParse(value, System.Globalization.NumberStyles.Any, CultureInfo.CurrentCulture, out result) &&
+                //Then try in US english
+                !double.TryParse(value, System.Globalization.NumberStyles.Any, CultureInfo.GetCultureInfo("en-US"), out result) &&
+                //Then in neutral language
+                !double.TryParse(value, System.Globalization.NumberStyles.Any, CultureInfo.InvariantCulture, out result))
+            {
+                result = defaultValue;
+            }
+
+            return result;
+        }
+
+        GMapOverlay ListOfXML = new GMapOverlay("XML");
+        List<CPoint> ListWithPointsFromXML = new List<CPoint>();
+        private void отобразитьToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            gmap.Overlays.Add(ListOfXML);
+
+            // Создали документ
+            XmlDocument xml = new XmlDocument();
+            // Открыли его по пути
+            xml.Load(@"Routes\3858821316.gpx");
+            // Создаем область видимости из xml файла
+            XmlNamespaceManager nsmgr = new XmlNamespaceManager(xml.NameTable);
+            nsmgr.AddNamespace("x", "http://www.topografix.com/GPX/1/1");
+            XmlNodeList nl = xml.SelectNodes("//x:trkpt", nsmgr);
+
+            // Элементы ХМЛ-документа
+            foreach (XmlElement xnode in nl)
+            {
+                CPoint cPoint = new CPoint();
+
+                cPoint.x = GetDouble(xnode.GetAttribute("lat"), 0);
+                cPoint.y = GetDouble(xnode.GetAttribute("lon"), 0);
+
+                // У каждого узла смотрим его поля
+                foreach (XmlNode childnode in xnode.ChildNodes)
+                {
+                    if (childnode.Name == "ele")
+                        cPoint.ele = GetDouble(childnode.InnerText, 0);
+                }
+
+                ListWithPointsFromXML.Add(cPoint);
+            }
+
+            for (int i = 0; i < ListWithPointsFromXML.Count; i++)
+            {
+                GMarkerGoogle marker = new GMarkerGoogle(new PointLatLng
+                    (ListWithPointsFromXML[i].x, ListWithPointsFromXML[i].y), GMarkerGoogleType.blue_dot);
+                marker.ToolTip = new GMapRoundedToolTip(marker);
+                marker.ToolTipText = ListWithPointsFromXML[i].ele.ToString();
+                ListOfXML.Markers.Add(marker);
+            }
+        }
+
+        
+        private void очиститьToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ListOfXML.Clear();
+            ListWithPointsFromXML.Clear();
+        }
+
+        private void Map_FormClosing(object sender, FormClosingEventArgs e)
+        {
+
+            if (MessageBox.Show("Вы действительно хотите выйти?", "Выход", MessageBoxButtons.YesNo) == DialogResult.Yes)
+                e.Cancel = false;
+            else
+                e.Cancel = true;
+
         }
     }
 }

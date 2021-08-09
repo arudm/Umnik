@@ -30,7 +30,6 @@ namespace Umnik
         private void InitializeComponent()
         {
             this.gmap = new GMap.NET.WindowsForms.GMapControl();
-            this.button1 = new System.Windows.Forms.Button();
             this.button2 = new System.Windows.Forms.Button();
             this.trackBar1 = new System.Windows.Forms.TrackBar();
             this.textBox1 = new System.Windows.Forms.TextBox();
@@ -38,6 +37,9 @@ namespace Umnik
             this.textBox3 = new System.Windows.Forms.TextBox();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.загрузитьКоординатыToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.xMLGPXToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.отобразитьToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.очиститьToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
@@ -73,16 +75,6 @@ namespace Umnik
             this.gmap.OnMarkerClick += new GMap.NET.WindowsForms.MarkerClick(this.gmap_OnMarkerClick);
             this.gmap.Load += new System.EventHandler(this.gMapControl1_Load);
             this.gmap.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.gmap_MouseDoubleClick);
-            // 
-            // button1
-            // 
-            this.button1.Location = new System.Drawing.Point(1091, 41);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(75, 23);
-            this.button1.TabIndex = 1;
-            this.button1.Text = "Выход";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
             // button2
             // 
@@ -130,7 +122,8 @@ namespace Umnik
             // menuStrip1
             // 
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.загрузитьКоординатыToolStripMenuItem});
+            this.загрузитьКоординатыToolStripMenuItem,
+            this.xMLGPXToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
             this.menuStrip1.Size = new System.Drawing.Size(1178, 24);
@@ -143,6 +136,29 @@ namespace Umnik
             this.загрузитьКоординатыToolStripMenuItem.Size = new System.Drawing.Size(137, 20);
             this.загрузитьКоординатыToolStripMenuItem.Text = "Загрузить координаты";
             this.загрузитьКоординатыToolStripMenuItem.Click += new System.EventHandler(this.загрузитьКоординатыToolStripMenuItem_Click_1);
+            // 
+            // xMLGPXToolStripMenuItem
+            // 
+            this.xMLGPXToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.отобразитьToolStripMenuItem,
+            this.очиститьToolStripMenuItem});
+            this.xMLGPXToolStripMenuItem.Name = "xMLGPXToolStripMenuItem";
+            this.xMLGPXToolStripMenuItem.Size = new System.Drawing.Size(68, 20);
+            this.xMLGPXToolStripMenuItem.Text = "XML (GPX)";
+            // 
+            // отобразитьToolStripMenuItem
+            // 
+            this.отобразитьToolStripMenuItem.Name = "отобразитьToolStripMenuItem";
+            this.отобразитьToolStripMenuItem.Size = new System.Drawing.Size(135, 22);
+            this.отобразитьToolStripMenuItem.Text = "Отобразить";
+            this.отобразитьToolStripMenuItem.Click += new System.EventHandler(this.отобразитьToolStripMenuItem_Click);
+            // 
+            // очиститьToolStripMenuItem
+            // 
+            this.очиститьToolStripMenuItem.Name = "очиститьToolStripMenuItem";
+            this.очиститьToolStripMenuItem.Size = new System.Drawing.Size(135, 22);
+            this.очиститьToolStripMenuItem.Text = "Очистить";
+            this.очиститьToolStripMenuItem.Click += new System.EventHandler(this.очиститьToolStripMenuItem_Click);
             // 
             // label1
             // 
@@ -184,12 +200,12 @@ namespace Umnik
             this.Controls.Add(this.textBox1);
             this.Controls.Add(this.trackBar1);
             this.Controls.Add(this.button2);
-            this.Controls.Add(this.button1);
             this.Controls.Add(this.gmap);
             this.Controls.Add(this.menuStrip1);
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "Map";
             this.Text = "Map";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Map_FormClosing);
             ((System.ComponentModel.ISupportInitialize)(this.trackBar1)).EndInit();
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
@@ -201,7 +217,6 @@ namespace Umnik
         #endregion
 
         private GMap.NET.WindowsForms.GMapControl gmap;
-        private System.Windows.Forms.Button button1;
         private System.Windows.Forms.Button button2;
         private System.Windows.Forms.TrackBar trackBar1;
         private System.Windows.Forms.TextBox textBox1;
@@ -212,6 +227,9 @@ namespace Umnik
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.ToolStripMenuItem xMLGPXToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem отобразитьToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem очиститьToolStripMenuItem;
     }
 }
 
