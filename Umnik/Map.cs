@@ -53,6 +53,27 @@ namespace Umnik
 
         private void gMapControl1_Load(object sender, EventArgs e)
         {
+            // Создание элементов меню
+            ToolStripMenuItem saveMenuItem = new ToolStripMenuItem("Сохранить карту");
+            ToolStripMenuItem YandexMenuItem = new ToolStripMenuItem("Установить Яндекс-карту");
+            ToolStripMenuItem GoogleMenuItem = new ToolStripMenuItem("Установить Google-карту");
+            ToolStripMenuItem OpenCycleMapMenuItem = new ToolStripMenuItem("Установить OpenCycleMap-карту");
+
+            ToolStripMenuItem ClearMap = new ToolStripMenuItem("Очистить карту");
+
+            // Добавление элементов в меню
+            contextMenuStrip1.Items.AddRange(new[] { saveMenuItem,  YandexMenuItem, GoogleMenuItem, OpenCycleMapMenuItem, ClearMap });
+            
+            // Ассоциирование контекстного меню
+            gmap.ContextMenuStrip = contextMenuStrip1;
+
+            // Установка обработки событий
+            saveMenuItem.Click += saveMenuItem_Click;
+            YandexMenuItem.Click += YandexMenuItem_Click;
+            GoogleMenuItem.Click += GoogleMenuItem_Click;
+            OpenCycleMapMenuItem.Click += OpenCycleMapMenuItem_Click;
+            ClearMap.Click += ClearMap_Click;
+
             // Настройки для компонента GMap
             gmap.Bearing = 0;
             // Перетаскивание правой кнопки мыши
@@ -107,84 +128,6 @@ namespace Umnik
             textBox1.Text = gmap.Zoom.ToString();
         }
 
-        
-        private void button2_Click(object sender, EventArgs e)
-        {
-            try
-            {
-                //Инициализируем новую переменную класса SaveFileDialog,
-                //открывающий диалоговое окно для сохранения файла. 
-                using (SaveFileDialog dialog = new SaveFileDialog())
-                {
-                    //Задаем текущую строку фильтра имен файлов,
-                    //которая определяет варианты, доступные в поле 
-                    //"Сохранить как тип файла" или "Файлы типа"
-                    //диалогового окна.                    
-                    dialog.Filter = "PNG (*.png)|*.png";
-
-                    //Задаем строку, содержащую имя файла,
-                    //выбранное в диалоговом  окне файла.
-                    dialog.FileName = "GMap.NET image";
-
-                    //Создаем новое изображение и
-                    //передаем компонент с картой.
-                    Image image = this.gmap.ToImage();
-
-                    if (image != null)
-                    {
-                        using (image)
-                        {
-                            //Запускаем общее диалоговое окно с
-                            //заданным по умолчанию владельцем.                          
-                            //Данное окно возвращает объект
-                            //System.Windows.Forms.DialogResult.OK,
-                            //если пользователь нажимает кнопку
-                            //ОК в диалоговом окне; в противном случае 
-                            //— объект System.Windows.Forms.DialogResult.Cancel.
-                            //Если пользователь нажал ОК, то идем дальше.
-                            if (dialog.ShowDialog() == DialogResult.OK)
-                            {
-                                //Заносим в переменную имя файла введенное 
-                                //в диалоговом окне.
-                                string fileName = dialog.FileName;
-
-                                //Выполняем проверку:
-                                //был ли задан формат изображения карты,
-                                //если нет, то добавляем после имени
-                                //расширение файла.
-                                if (!fileName.EndsWith(".png",
-                                    StringComparison.OrdinalIgnoreCase))
-                                {
-                                    fileName += ".png";
-                                }
-                                //Выполняем сохранение изображения карты.
-                                image.Save(fileName);
-
-                                //Выводим сообщение об успешном сохранении 
-                                //и пути к данному изображению карты.
-                                MessageBox.Show("Карта успешно сохранена в директории: "
-                                    + Environment.NewLine
-                                    + dialog.FileName, "GMap.NET",
-                                    MessageBoxButtons.OK,
-                                    MessageBoxIcon.Asterisk);
-                            }
-                        }
-                    }
-                }
-            }
-            catch (Exception exception)
-            {
-                //Если на одном из этапов сохранения произошла ошибка 
-                MessageBox.Show("Ошибка при сохранении карты: "
-                    + Environment.NewLine
-                    + exception.Message,
-                    "GMap.NET",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Hand);
-            }
-        }
-
-       
         private void загрузитьКоординатыToolStripMenuItem_Click_1(object sender, EventArgs e)
         {
             List<CPoint> points = new List<CPoint>();
@@ -356,7 +299,6 @@ namespace Umnik
             }
         }
 
-        
         private void очиститьToolStripMenuItem_Click(object sender, EventArgs e)
         {
             ListOfXML.Clear();
@@ -371,6 +313,75 @@ namespace Umnik
             else
                 e.Cancel = true;
 
+        }
+
+        // Сохранение изображения
+        void saveMenuItem_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                using (SaveFileDialog dialogforsavemap = new SaveFileDialog())
+                {
+                    // Формат картинки
+                    dialogforsavemap.Filter = "PNG (*.png)|*.png";
+
+                    // Название картинки
+                    dialogforsavemap.FileName = "Текущее положение карты";
+
+                    Image image = gmap.ToImage();
+
+                    if (image != null)
+                    {
+                        using (image)
+                        {
+                            if (dialogforsavemap.ShowDialog() == DialogResult.OK)
+                            {
+                                string fileName = dialogforsavemap.FileName;
+                                if (!fileName.EndsWith(".png", StringComparison.OrdinalIgnoreCase))
+                                    fileName += ".png";
+
+                                image.Save(fileName);
+                                MessageBox.Show("Карта успешно сохранена в директории: " + Environment.NewLine + dialogforsavemap.FileName, "GMap.NET", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
+                            }
+                        }
+                    }
+                }
+            }
+
+            // Если ошибка
+            catch (Exception exception)
+            {
+                MessageBox.Show("Ошибка при сохранении карты: " + Environment.NewLine + exception.Message, "GMap.NET", MessageBoxButtons.OK, MessageBoxIcon.Hand);
+            }
+        }
+
+        // Смена поставщика карт
+        void YandexMenuItem_Click(object sender, EventArgs e)
+        {
+            gmap.MapProvider = GMapProviders.YandexMap;
+            gmap.Zoom = 10;
+        }
+
+        void GoogleMenuItem_Click(object sender, EventArgs e)
+        {
+            gmap.MapProvider = GMapProviders.GoogleMap;
+            gmap.Zoom = 10;
+        }
+
+        void OpenCycleMapMenuItem_Click(object sender, EventArgs e)
+        {
+            gmap.MapProvider = GMapProviders.OpenCycleMap;
+            gmap.Zoom = 10;
+        }
+
+        // Очистка карты
+        void ClearMap_Click(object sender, EventArgs e)
+        {
+            gmap.Overlays.Clear();
+
+            PositionsForUser.Clear();
+            ListOfXML.Clear();
+            ListWithPointsFromXML.Clear();
         }
     }
 }
