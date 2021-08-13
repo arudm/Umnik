@@ -232,7 +232,21 @@ namespace Umnik
             }
         }
 
-        private void gmap_OnMarkerClick(GMapMarker item, MouseEventArgs e)
+        // Вывод координат маркера нажатием ЛКМ на него в текстбоксы
+        private void gmap_OnMarkerClickLMK(GMapMarker item, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Left)
+            {
+                var lat = gmap.FromLocalToLatLng(e.X, e.Y).Lat;
+                var lng = gmap.FromLocalToLatLng(e.X, e.Y).Lng;
+
+                textBox2.Text = lat.ToString();
+                textBox3.Text = lng.ToString();
+            }
+        }
+
+        // Удаление маркера нажатием ПКМ
+        private void gmap_OnMarkerClickRMK(GMapMarker item, MouseEventArgs e)
         {
             if (e.Button == MouseButtons.Right)
             {
