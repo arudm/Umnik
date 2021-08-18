@@ -237,8 +237,9 @@ namespace Umnik
         {
             if (e.Button == MouseButtons.Left)
             {
-                var lat = gmap.FromLocalToLatLng(e.X, e.Y).Lat;
-                var lng = gmap.FromLocalToLatLng(e.X, e.Y).Lng;
+                var lat = item.Position.Lat;
+                var lng = item.Position.Lng;
+
                 textBox2.Text = lat.ToString();
                 textBox3.Text = lng.ToString();
             }

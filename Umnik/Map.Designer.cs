@@ -85,16 +85,16 @@ namespace Umnik
             // 
             // trackBar1
             // 
-            this.trackBar1.Location = new System.Drawing.Point(1129, 134);
+            this.trackBar1.Location = new System.Drawing.Point(1129, 53);
             this.trackBar1.Name = "trackBar1";
             this.trackBar1.Orientation = System.Windows.Forms.Orientation.Vertical;
-            this.trackBar1.Size = new System.Drawing.Size(37, 398);
+            this.trackBar1.Size = new System.Drawing.Size(37, 479);
             this.trackBar1.TabIndex = 3;
             this.trackBar1.Scroll += new System.EventHandler(this.trackBar1_Scroll);
             // 
             // textBox1
             // 
-            this.textBox1.Location = new System.Drawing.Point(1129, 108);
+            this.textBox1.Location = new System.Drawing.Point(1129, 27);
             this.textBox1.Name = "textBox1";
             this.textBox1.Size = new System.Drawing.Size(33, 20);
             this.textBox1.TabIndex = 4;
