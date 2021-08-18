@@ -219,7 +219,7 @@ namespace Umnik
                 // Добавляем метку на слой
                 GMarkerGoogle MarkerWithMyPosition = new GMarkerGoogle(new PointLatLng(y, x), GMarkerGoogleType.blue_pushpin);
                 MarkerWithMyPosition.ToolTip = new GMapRoundedToolTip(MarkerWithMyPosition);
-                MarkerWithMyPosition.ToolTipText = string.Format("Koordinate: \n Lng: {0} \n Lat: {1}", gmap.FromLocalToLatLng(e.X, e.Y).Lng, gmap.FromLocalToLatLng(e.X, e.Y).Lat);
+                MarkerWithMyPosition.ToolTipText = string.Format("Coordinate: \n Lng: {0} \n Lat: {1}", gmap.FromLocalToLatLng(e.X, e.Y).Lng, gmap.FromLocalToLatLng(e.X, e.Y).Lat);
                 PositionsForUser.Markers.Add(MarkerWithMyPosition);
                 
                
@@ -233,26 +233,25 @@ namespace Umnik
         }
 
         // Вывод координат маркера нажатием ЛКМ на него в текстбоксы
-        private void gmap_OnMarkerClickLMK(GMapMarker item, MouseEventArgs e)
+        private void gmap_OnMarkerClick(GMapMarker item, MouseEventArgs e)
         {
             if (e.Button == MouseButtons.Left)
             {
                 var lat = gmap.FromLocalToLatLng(e.X, e.Y).Lat;
                 var lng = gmap.FromLocalToLatLng(e.X, e.Y).Lng;
-
                 textBox2.Text = lat.ToString();
                 textBox3.Text = lng.ToString();
             }
-        }
 
-        // Удаление маркера нажатием ПКМ
-        private void gmap_OnMarkerClickRMK(GMapMarker item, MouseEventArgs e)
-        {
-            if (e.Button == MouseButtons.Right)
+            if (e.Button == MouseButtons.Middle)
             {
-                PositionsForUser.Markers.Remove(item);
+                // Узнаем слой удаляемого маркера
+                GMapOverlay overlay = item.Overlay;
+                // Удаляем в этом слое этот маркер
+                overlay.Markers.Remove(item);
             }
         }
+
         public static double GetDouble(string value, double defaultValue)
         {
             double result;
