@@ -396,5 +396,15 @@ namespace Umnik
             ListOfXML.Clear();
             ListWithPointsFromXML.Clear();
         }
+
+        private void gmap_MouseMove(object sender, MouseEventArgs e)
+        {
+            double lat = gmap.FromLocalToLatLng(e.X, e.Y).Lat;
+            double lng = gmap.FromLocalToLatLng(e.X, e.Y).Lng;
+
+            LatStrip.Text = "lat = " + Convert.ToString(lat);
+            LngStrip.Text = "   lng = " + Convert.ToString(lng);
+            
+        }
     }
 }
