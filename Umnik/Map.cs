@@ -120,6 +120,9 @@ namespace Umnik
             trackBar1.Minimum = 2;
             trackBar1.Value = (int)gmap.Zoom;
             textBox1.Text = gmap.Zoom.ToString();
+
+            trackBar2.Minimum = 0;
+            trackBar2.Maximum = 360;
         }
 
         private void trackBar1_Scroll(object sender, EventArgs e)
@@ -406,6 +409,11 @@ namespace Umnik
             LatStrip.Text = "lat = " + Convert.ToString(lat);
             LngStrip.Text = "   lng = " + Convert.ToString(lng);
             
+        }
+
+        private void trackBar2_Scroll(object sender, EventArgs e)
+        {
+            gmap.Bearing = trackBar2.Value;
         }
     }
 }

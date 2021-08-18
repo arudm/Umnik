@@ -48,9 +48,11 @@ namespace Umnik
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.LatStrip = new System.Windows.Forms.ToolStripStatusLabel();
             this.LngStrip = new System.Windows.Forms.ToolStripStatusLabel();
+            this.trackBar2 = new System.Windows.Forms.TrackBar();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar1)).BeginInit();
             this.menuStrip1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.trackBar2)).BeginInit();
             this.SuspendLayout();
             // 
             // gmap
@@ -217,11 +219,20 @@ namespace Umnik
             this.LngStrip.Size = new System.Drawing.Size(43, 17);
             this.LngStrip.Text = "lngStrip";
             // 
+            // trackBar2
+            // 
+            this.trackBar2.Location = new System.Drawing.Point(187, 541);
+            this.trackBar2.Name = "trackBar2";
+            this.trackBar2.Size = new System.Drawing.Size(403, 37);
+            this.trackBar2.TabIndex = 13;
+            this.trackBar2.Scroll += new System.EventHandler(this.trackBar2_Scroll);
+            // 
             // Map
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1178, 647);
+            this.Controls.Add(this.trackBar2);
             this.Controls.Add(this.statusStrip1);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.label2);
@@ -241,6 +252,7 @@ namespace Umnik
             this.menuStrip1.PerformLayout();
             this.statusStrip1.ResumeLayout(false);
             this.statusStrip1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.trackBar2)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -266,6 +278,7 @@ namespace Umnik
         private System.Windows.Forms.StatusStrip statusStrip1;
         private System.Windows.Forms.ToolStripStatusLabel LatStrip;
         private System.Windows.Forms.ToolStripStatusLabel LngStrip;
+        private System.Windows.Forms.TrackBar trackBar2;
     }
 }
 
