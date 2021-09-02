@@ -1,15 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.IO;
 using System.Xml;
-using System.Device.Location;
 
 using GMap.NET;
 using GMap.NET.MapProviders;
@@ -17,6 +12,11 @@ using GMap.NET.WindowsForms;
 using GMap.NET.WindowsForms.Markers;
 using GMap.NET.WindowsForms.ToolTips;
 using System.Globalization;
+
+using Itinero;
+using Itinero.IO.Osm;
+using Itinero.Osm.Vehicles;
+using System.Device.Location;
 
 namespace Umnik
 {
@@ -204,58 +204,6 @@ namespace Umnik
             streamWriter.Close();
         }
 
-        private void gmap_MouseDoubleClick(object sender, MouseEventArgs e)
-        {
-
-            if (e.Button == MouseButtons.Left)
-            {
-                gmap.Overlays.Add(PositionsForUser);
-
-                // Долгота - longitude - lng - с запада на восток
-                double x = gmap.FromLocalToLatLng(e.X, e.Y).Lng;
-                // Широта - latitude - lat - с севера на юг
-                double y = gmap.FromLocalToLatLng(e.X, e.Y).Lat;
-
-                textBox2.Text = x.ToString();
-                textBox3.Text = y.ToString();
-
-                // Добавляем метку на слой
-                GMarkerGoogle MarkerWithMyPosition = new GMarkerGoogle(new PointLatLng(y, x), GMarkerGoogleType.blue_pushpin);
-                MarkerWithMyPosition.ToolTip = new GMapRoundedToolTip(MarkerWithMyPosition);
-                MarkerWithMyPosition.ToolTipText = string.Format("Coordinate: \n Lng: {0} \n Lat: {1}", gmap.FromLocalToLatLng(e.X, e.Y).Lng, gmap.FromLocalToLatLng(e.X, e.Y).Lat);
-                PositionsForUser.Markers.Add(MarkerWithMyPosition);
-                
-               
-
-                // Сохранение наших координат (текстовик, цсв, бд, текстбокс, строки, лист)
-                //FileStream fileStream = new FileStream(@"Date\Координаты_ВыбранныеПользователем.txt", FileMode.Append, FileAccess.Write);
-                //StreamWriter streamWriter = new StreamWriter(fileStream, Encoding.GetEncoding(1251));
-                //streamWriter.WriteLine(y + ";" + x);
-                //streamWriter.Close();
-            }
-        }
-
-        // Вывод координат маркера нажатием ЛКМ на него в текстбоксы
-        private void gmap_OnMarkerClick(GMapMarker item, MouseEventArgs e)
-        {
-            if (e.Button == MouseButtons.Left)
-            {
-                var lat = item.Position.Lat;
-                var lng = item.Position.Lng;
-
-                textBox2.Text = lat.ToString();
-                textBox3.Text = lng.ToString();
-            }
-
-            if (e.Button == MouseButtons.Middle)
-            {
-                // Узнаем слой удаляемого маркера
-                GMapOverlay overlay = item.Overlay;
-                // Удаляем в этом слое этот маркер
-                overlay.Markers.Remove(item);
-            }
-        }
-
         public static double GetDouble(string value, double defaultValue)
         {
             double result;
@@ -401,19 +349,137 @@ namespace Umnik
             ListWithPointsFromXML.Clear();
         }
 
+        private void trackBar2_Scroll(object sender, EventArgs e)
+        {
+            gmap.Bearing = trackBar2.Value;
+        }
+
+
+        GeoCoordinate MarkerClick;
+        private void gmap_MouseDoubleClick(object sender, MouseEventArgs e)
+        {
+
+            if (e.Button == MouseButtons.Left)
+            {
+                gmap.Overlays.Add(PositionsForUser);
+
+                // Долгота - longitude - lng - с запада на восток
+                double x = gmap.FromLocalToLatLng(e.X, e.Y).Lng;
+                // Широта - latitude - lat - с севера на юг
+                double y = gmap.FromLocalToLatLng(e.X, e.Y).Lat;
+
+                MarkerClick = new GeoCoordinate(y, x);
+
+                //textBox2.Text = x.ToString();
+                //textBox3.Text = y.ToString();
+
+                // Добавляем метку на слой
+                GMarkerGoogle MarkerWithMyPosition = new GMarkerGoogle(new PointLatLng(y, x), GMarkerGoogleType.red_small);
+                MarkerWithMyPosition.ToolTip = new GMapRoundedToolTip(MarkerWithMyPosition);
+                MarkerWithMyPosition.ToolTipText = string.Format("Coordinate: \n Lng: {0} \n Lat: {1}", gmap.FromLocalToLatLng(e.X, e.Y).Lng, gmap.FromLocalToLatLng(e.X, e.Y).Lat);
+                PositionsForUser.Markers.Add(MarkerWithMyPosition);
+                flag = true;
+
+
+
+                // Сохранение наших координат (текстовик, цсв, бд, текстбокс, строки, лист)
+                //FileStream fileStream = new FileStream(@"Date\Координаты_ВыбранныеПользователем.txt", FileMode.Append, FileAccess.Write);
+                //StreamWriter streamWriter = new StreamWriter(fileStream, Encoding.GetEncoding(1251));
+                //streamWriter.WriteLine(y + ";" + x);
+                //streamWriter.Close();
+            }
+        }
+
+        GeoCoordinate MoveCursor;
+        bool flag = false;
         private void gmap_MouseMove(object sender, MouseEventArgs e)
         {
             double lat = gmap.FromLocalToLatLng(e.X, e.Y).Lat;
             double lng = gmap.FromLocalToLatLng(e.X, e.Y).Lng;
 
-            LatStrip.Text = "lat = " + Convert.ToString(lat);
-            LngStrip.Text = "   lng = " + Convert.ToString(lng);
+            if (flag==true)
+            {
+                MoveCursor = new GeoCoordinate(lat, lng);
+                double distance = MarkerClick.GetDistanceTo(MoveCursor);
+
+                distance = Math.Ceiling(distance);
+                double km = distance / 1000;
+
+                mStrip.Text = " Distance between marker and cursor = " + distance.ToString() + " m;";
+                kmStrip.Text = km.ToString() + " km;";
+            }
+            else
+            {
+                mStrip.Text = " Distance between marker and cursor = 0 m;";
+                kmStrip.Text = "0 km;";
+            }
+            
+            LatStrip.Text = "lat = " + Convert.ToString(lat) + ";";
+            LngStrip.Text = "   lng = " + Convert.ToString(lng) + ";";
             
         }
 
-        private void trackBar2_Scroll(object sender, EventArgs e)
+        
+        bool count = false;
+        GeoCoordinate First;
+        GeoCoordinate Second;
+        private void gmap_OnMarkerClick(GMapMarker item, MouseEventArgs e)
         {
-            gmap.Bearing = trackBar2.Value;
+            if (e.Button == MouseButtons.Left)
+            {
+                if (count == true & item.Position.Lat.ToString()!= textBox2.Text & item.Position.Lng.ToString() != textBox3.Text)
+                {
+                    textBox6.Text = item.Position.Lat.ToString();
+                    textBox7.Text = item.Position.Lng.ToString();
+
+                    double x = gmap.FromLocalToLatLng(e.X, e.Y).Lng;
+                    double y = gmap.FromLocalToLatLng(e.X, e.Y).Lat;
+
+                    Second = new GeoCoordinate(y, x);
+                    double distance = First.GetDistanceTo(Second);
+
+                    distance = Math.Ceiling(distance);
+                    double km = distance / 1000;
+
+                    textBox4.Text = distance.ToString();
+                    textBox5.Text = km.ToString();
+                }
+                if (count==false)
+                {
+                    textBox2.Text = item.Position.Lat.ToString();
+                    textBox3.Text = item.Position.Lng.ToString();
+                    First = new GeoCoordinate(item.Position.Lat, item.Position.Lng);
+                    count=true;
+                }
+            }
+
+            if (e.Button == MouseButtons.Middle)
+            {
+                if (item.Position.Lat == MarkerClick.Latitude & item.Position.Lng == MarkerClick.Longitude)
+                {
+                    flag = false;
+                }
+                if (textBox2.Text == item.Position.Lat.ToString() & textBox3.Text == item.Position.Lng.ToString() | textBox6.Text == item.Position.Lat.ToString() & textBox7.Text == item.Position.Lng.ToString())
+                {
+                    textBox2.Text = "";
+                    textBox3.Text = "";
+
+                    textBox6.Text = "";
+                    textBox7.Text = "";
+
+                    textBox4.Text = "";
+                    textBox5.Text = "";
+
+                    count = false;
+                }
+               
+                // Узнаем слой удаляемого маркера
+                GMapOverlay overlay = item.Overlay;
+                // Удаляем в этом слое этот маркер
+                overlay.Markers.Remove(item);
+
+            }
         }
+
     }
 }
