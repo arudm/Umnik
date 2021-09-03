@@ -394,12 +394,12 @@ namespace Umnik
         bool flag = false;
         private void gmap_MouseMove(object sender, MouseEventArgs e)
         {
-            double lat = gmap.FromLocalToLatLng(e.X, e.Y).Lat;
-            double lng = gmap.FromLocalToLatLng(e.X, e.Y).Lng;
+            double y = gmap.FromLocalToLatLng(e.X, e.Y).Lat;
+            double x = gmap.FromLocalToLatLng(e.X, e.Y).Lng;
 
             if (flag==true)
             {
-                MoveCursor = new GeoCoordinate(lat, lng);
+                MoveCursor = new GeoCoordinate(y, x);
                 double distance = MarkerClick.GetDistanceTo(MoveCursor);
 
                 distance = Math.Ceiling(distance);
@@ -414,8 +414,8 @@ namespace Umnik
                 kmStrip.Text = "0 km;";
             }
             
-            LatStrip.Text = "lat = " + Convert.ToString(lat) + ";";
-            LngStrip.Text = "   lng = " + Convert.ToString(lng) + ";";
+            LatStrip.Text = "lat = " + Convert.ToString(y) + ";";
+            LngStrip.Text = "   lng = " + Convert.ToString(x) + ";";
             
         }
 
@@ -427,6 +427,23 @@ namespace Umnik
         {
             if (e.Button == MouseButtons.Left)
             {
+                if (count == false)
+                {
+                    textBox2.Text = item.Position.Lat.ToString();
+                    textBox3.Text = item.Position.Lng.ToString();
+                    First = new GeoCoordinate(item.Position.Lat, item.Position.Lng);
+                    count = true;
+                    if (textBox6.Text != "" & textBox7.Text != "")
+                    {
+                        double distance = First.GetDistanceTo(Second);
+
+                        distance = Math.Ceiling(distance);
+                        double km = distance / 1000;
+
+                        textBox4.Text = distance.ToString();
+                        textBox5.Text = km.ToString();
+                    }
+                }
                 if (count == true & item.Position.Lat.ToString()!= textBox2.Text & item.Position.Lng.ToString() != textBox3.Text)
                 {
                     textBox6.Text = item.Position.Lat.ToString();
@@ -436,21 +453,19 @@ namespace Umnik
                     double y = gmap.FromLocalToLatLng(e.X, e.Y).Lat;
 
                     Second = new GeoCoordinate(y, x);
-                    double distance = First.GetDistanceTo(Second);
+                    if (textBox2.Text != "" & textBox3.Text != "")
+                    {
+                        double distance = Second.GetDistanceTo(First);
 
-                    distance = Math.Ceiling(distance);
-                    double km = distance / 1000;
+                        distance = Math.Ceiling(distance);
+                        double km = distance / 1000;
 
-                    textBox4.Text = distance.ToString();
-                    textBox5.Text = km.ToString();
+                        textBox4.Text = distance.ToString();
+                        textBox5.Text = km.ToString();
+                    }
+                    
                 }
-                if (count==false)
-                {
-                    textBox2.Text = item.Position.Lat.ToString();
-                    textBox3.Text = item.Position.Lng.ToString();
-                    First = new GeoCoordinate(item.Position.Lat, item.Position.Lng);
-                    count=true;
-                }
+                
             }
 
             if (e.Button == MouseButtons.Middle)
@@ -459,20 +474,25 @@ namespace Umnik
                 {
                     flag = false;
                 }
-                if (textBox2.Text == item.Position.Lat.ToString() & textBox3.Text == item.Position.Lng.ToString() | textBox6.Text == item.Position.Lat.ToString() & textBox7.Text == item.Position.Lng.ToString())
+                if (textBox2.Text == item.Position.Lat.ToString() & textBox3.Text == item.Position.Lng.ToString())
                 {
                     textBox2.Text = "";
                     textBox3.Text = "";
-
-                    textBox6.Text = "";
-                    textBox7.Text = "";
 
                     textBox4.Text = "";
                     textBox5.Text = "";
 
                     count = false;
                 }
-               
+                if ( textBox6.Text == item.Position.Lat.ToString() & textBox7.Text == item.Position.Lng.ToString())
+                {
+                    textBox6.Text = "";
+                    textBox7.Text = "";
+
+                    textBox4.Text = "";
+                    textBox5.Text = "";
+                }
+
                 // Узнаем слой удаляемого маркера
                 GMapOverlay overlay = item.Overlay;
                 // Удаляем в этом слое этот маркер
