@@ -374,7 +374,7 @@ namespace Umnik
                 //textBox3.Text = y.ToString();
 
                 // Добавляем метку на слой
-                if (checkBox1.Checked == true)
+                if (radioButton1.Checked)
                 {
                     points.Clear();
                     GMarkerGoogle MarkerWithMyPosition = new GMarkerGoogle(new PointLatLng(y, x), GMarkerGoogleType.red);
@@ -399,7 +399,7 @@ namespace Umnik
                     
 
                 }
-                else if (checkBox2.Checked == true)
+                else if (radioButton2.Checked)
                 {
                     points.Clear();
                     GMarkerGoogle MarkerWithMyPosition = new GMarkerGoogle(new PointLatLng(y, x), GMarkerGoogleType.blue);
@@ -425,14 +425,12 @@ namespace Umnik
                     
                     
                 }
-                else
+                else if (radioButton3.Checked)
                 {
                     GMarkerGoogle MarkerWithMyPosition = new GMarkerGoogle(new PointLatLng(y, x), GMarkerGoogleType.orange);
                     MarkerWithMyPosition.ToolTip = new GMapRoundedToolTip(MarkerWithMyPosition);
                     MarkerWithMyPosition.ToolTipText = string.Format("Coordinate: \n Lng: {0} \n Lat: {1}", gmap.FromLocalToLatLng(e.X, e.Y).Lng, gmap.FromLocalToLatLng(e.X, e.Y).Lat);
                     PositionsForUser.Markers.Add(MarkerWithMyPosition);
-
-
                 }
 
                 flag = true;
@@ -637,28 +635,5 @@ namespace Umnik
             PositionsForUser.Clear();
         }
 
-        private void checkBox1_CheckedChanged(object sender, EventArgs e)
-        {
-            if (checkBox1.Checked)
-            {
-                checkBox2.Enabled = false;
-            }
-            else
-            {
-                checkBox2.Enabled = true;
-            }
-        }
-
-        private void checkBox2_CheckedChanged(object sender, EventArgs e)
-        {
-            if (checkBox2.Checked)
-            {
-                checkBox1.Enabled = false;
-            }
-            else
-            {
-                checkBox1.Enabled = true;
-            }
-        }
     }
 }
