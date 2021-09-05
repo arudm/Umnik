@@ -16,7 +16,6 @@ using System.Device.Location;
 
 namespace Umnik
 {
-    //комент для гита
     public partial class Map : Form
     {
         //Класс точка - координаты
@@ -24,12 +23,12 @@ namespace Umnik
 
         public class CPoint
         {
-            public double x { get; set; }
-            public double y { get; set; }
-            public double ele { get; set; }
+            public double X { get; set; }
+            public double Y { get; set; }
+            public double Ele { get; set; }
             public CPoint() { }
-            public CPoint(double _x, double _y) { x = _x; y = _y; }
-            public CPoint(double _x, double _y, double _ele) { x = _x; y = _y; ele = _ele; }
+            public CPoint(double _x, double _y) { X = _x; Y = _y; }
+            public CPoint(double _x, double _y, double _ele) { X = _x; Y = _y; Ele = _ele; }
 
         }
         #endregion
@@ -51,7 +50,7 @@ namespace Umnik
             ToolStripMenuItem ClearMap = new ToolStripMenuItem("Очистить карту");
 
             // Слой меток для двойного клика
-            gmap.Overlays.Add(PositionsForUser);
+            gmap.Overlays.Add(PositionsClick);
             gmap.Overlays.Add(PolygonClick);
             gmap.Overlays.Add(RouteClick);
 
@@ -194,7 +193,7 @@ namespace Umnik
             StreamWriter streamWriter = new StreamWriter(fileStream, Encoding.GetEncoding(1251));
 
             for (int i = 0; i < points.Count; i++)
-                streamWriter.WriteLine(points[i].x + ";" + points[i].y);
+                streamWriter.WriteLine(points[i].X + ";" + points[i].Y);
             streamWriter.Close();
         }
 
@@ -235,14 +234,14 @@ namespace Umnik
             {
                 CPoint cPoint = new CPoint();
 
-                cPoint.x = GetDouble(xnode.GetAttribute("lat"), 0);
-                cPoint.y = GetDouble(xnode.GetAttribute("lon"), 0);
+                cPoint.X = GetDouble(xnode.GetAttribute("lat"), 0);
+                cPoint.Y = GetDouble(xnode.GetAttribute("lon"), 0);
 
                 // У каждого узла смотрим его поля
                 foreach (XmlNode childnode in xnode.ChildNodes)
                 {
                     if (childnode.Name == "ele")
-                        cPoint.ele = GetDouble(childnode.InnerText, 0);
+                        cPoint.Ele = GetDouble(childnode.InnerText, 0);
                 }
 
                 ListWithPointsFromXML.Add(cPoint);
@@ -251,9 +250,9 @@ namespace Umnik
             for (int i = 0; i < ListWithPointsFromXML.Count; i++)
             {
                 GMarkerGoogle marker = new GMarkerGoogle(new PointLatLng
-                    (ListWithPointsFromXML[i].x, ListWithPointsFromXML[i].y), GMarkerGoogleType.blue_dot);
+                    (ListWithPointsFromXML[i].X, ListWithPointsFromXML[i].Y), GMarkerGoogleType.blue_dot);
                 marker.ToolTip = new GMapRoundedToolTip(marker);
-                marker.ToolTipText = ListWithPointsFromXML[i].ele.ToString();
+                marker.ToolTipText = ListWithPointsFromXML[i].Ele.ToString();
                 ListOfXML.Markers.Add(marker);
             }
         }
@@ -338,13 +337,17 @@ namespace Umnik
         {
             gmap.Overlays.Clear();
 
-            PositionsForUser.Clear();
+            PositionsClick.Clear();
             ListOfXML.Clear();
             ListWithPointsFromXML.Clear();
 
             RouteListClick.Clear();
             RouteClick.Clear();
             RouteClick.Routes.Clear();
+
+            PolygonListClick.Clear();
+            PolygonClick.Markers.Clear();
+            PolygonClick.Polygons.Clear();
         }
 
         private void trackBar2_Scroll(object sender, EventArgs e)
@@ -352,88 +355,96 @@ namespace Umnik
             gmap.Bearing = trackBar2.Value;
         }
 
-
         List<CPoint> RouteListClick = new List<CPoint>();
         List<CPoint> PolygonListClick = new List<CPoint>();
-        List<PointLatLng> points = new List<PointLatLng>();
+        List<PointLatLng> Points = new List<PointLatLng>();
         GMapOverlay PolygonClick = new GMapOverlay("PolygonClick");
         GMapOverlay RouteClick = new GMapOverlay("RouteClick");
-        GMapOverlay PositionsForUser = new GMapOverlay("PositionsForUser");
+        GMapOverlay PositionsClick = new GMapOverlay("PositionsForUser");
+        GMarkerGoogleType Color;
+        private void MarkerWithPosition(MouseEventArgs e, GMapOverlay overlayClick, List<CPoint> overlayListClick = null)
+        {
+            // Долгота - longitude - lng - с запада на восток
+            double x = gmap.FromLocalToLatLng(e.X, e.Y).Lng;
+            // Широта - latitude - lat - с севера на юг
+            double y = gmap.FromLocalToLatLng(e.X, e.Y).Lat;
+
+            MarkerClick = new GeoCoordinate(y, x);
+
+            //textBox2.Text = x.ToString();
+            //textBox3.Text = y.ToString();
+
+            Points.Clear();
+
+            if (radioButton1.Checked)
+                Color = GMarkerGoogleType.red;
+
+            if (radioButton2.Checked)
+                Color = GMarkerGoogleType.blue;
+
+            if (radioButton3.Checked)
+                Color = GMarkerGoogleType.green;
+
+            // Добавляем метку на слой
+            GMarkerGoogle MyMarker = new GMarkerGoogle(new PointLatLng(y, x), Color);
+            MyMarker.ToolTip = new GMapRoundedToolTip(MyMarker);
+            MyMarker.ToolTipText = string.Format("Coordinate: \n Lng: {0} \n Lat: {1}", gmap.FromLocalToLatLng(e.X, e.Y).Lng, gmap.FromLocalToLatLng(e.X, e.Y).Lat);
+            overlayClick.Markers.Add(MyMarker);
+
+            if (radioButton1.Checked || radioButton2.Checked)
+            {
+                overlayListClick.Add(new CPoint(y, x));
+
+                for (int i = 0; i < overlayListClick.Count; i++)
+                    Points.Add(new PointLatLng(overlayListClick[i].X, overlayListClick[i].Y));
+            }
+
+            markerPlaced = true;
+        }
+        private void OverlayMouseDoubleClick(MouseEventArgs e, GMapOverlay overlayClick, List<CPoint> overlayListClick = null)
+        {
+            MarkerWithPosition(e, overlayClick, overlayListClick);
+
+            if (radioButton1.Checked)
+            {
+                GMapRoute routeClick = new GMapRoute(Points, "routeClick");
+                routeClick.Stroke = new Pen(System.Drawing.Color.Red);
+
+                if (overlayClick.Routes.Count != 0)
+                    overlayClick.Routes.Clear();
+
+                overlayClick.Routes.Add(routeClick);
+            }
+
+            if (radioButton2.Checked)
+            {
+                var polygon = new GMapPolygon(Points, "Click");
+                polygon.Fill = new SolidBrush(System.Drawing.Color.FromArgb(50, System.Drawing.Color.Blue));
+                polygon.Stroke = new Pen(System.Drawing.Color.Blue);
+
+                if (overlayClick.Polygons.Count != 0)
+                    overlayClick.Polygons.Clear();
+
+                overlayClick.Polygons.Add(polygon);
+            }
+        }
         private void gmap_MouseDoubleClick(object sender, MouseEventArgs e)
         {
             if (e.Button == MouseButtons.Left)
             {
-                // Долгота - longitude - lng - с запада на восток
-                double x = gmap.FromLocalToLatLng(e.X, e.Y).Lng;
-                // Широта - latitude - lat - с севера на юг
-                double y = gmap.FromLocalToLatLng(e.X, e.Y).Lat;
-
-                MarkerClick = new GeoCoordinate(y, x);
-
-                //textBox2.Text = x.ToString();
-                //textBox3.Text = y.ToString();
-
                 // Добавляем метку на слой
                 if (radioButton1.Checked)
                 {
-                    points.Clear();
-                    GMarkerGoogle MarkerWithMyPosition = new GMarkerGoogle(new PointLatLng(y, x), GMarkerGoogleType.red);
-                    MarkerWithMyPosition.ToolTip = new GMapRoundedToolTip(MarkerWithMyPosition);
-                    MarkerWithMyPosition.ToolTipText = string.Format("Coordinate: \n Lng: {0} \n Lat: {1}", gmap.FromLocalToLatLng(e.X, e.Y).Lng, gmap.FromLocalToLatLng(e.X, e.Y).Lat);
-                    RouteClick.Markers.Add(MarkerWithMyPosition);
-
-                    if (RouteClick.Routes.Count != 0)
-                    {
-                        RouteClick.Routes.Clear();
-                    }
-
-                    RouteListClick.Add(new CPoint(y, x));
-
-                    
-                    for (int i = 0; i < RouteListClick.Count; i++)
-                        points.Add(new PointLatLng(RouteListClick[i].x, RouteListClick[i].y));
-
-                    GMapRoute routeClick = new GMapRoute(points, "routeClick");
-                    routeClick.Stroke = new Pen(Color.Red);
-                    RouteClick.Routes.Add(routeClick);
-                    
-
+                    OverlayMouseDoubleClick(e, RouteClick, RouteListClick);
                 }
                 else if (radioButton2.Checked)
                 {
-                    points.Clear();
-                    GMarkerGoogle MarkerWithMyPosition = new GMarkerGoogle(new PointLatLng(y, x), GMarkerGoogleType.blue);
-                    MarkerWithMyPosition.ToolTip = new GMapRoundedToolTip(MarkerWithMyPosition);
-                    MarkerWithMyPosition.ToolTipText = string.Format("Coordinate: \n Lng: {0} \n Lat: {1}", gmap.FromLocalToLatLng(e.X, e.Y).Lng, gmap.FromLocalToLatLng(e.X, e.Y).Lat);
-                    PolygonClick.Markers.Add(MarkerWithMyPosition);
-
-                    // Удаляем полигон, если прокладываем повторно, чтобы не было наложения
-                    if (PolygonClick.Polygons.Count != 0)
-                    {
-                        PolygonClick.Polygons.Clear();
-                    }
-
-                    PolygonListClick.Add(new CPoint(y, x));
-
-                    for (int i = 0; i < PolygonListClick.Count; i++)
-                        points.Add(new PointLatLng(PolygonListClick[i].x, PolygonListClick[i].y));
-
-                    var polygon = new GMapPolygon(points, "Click");
-                    polygon.Fill = new SolidBrush(Color.FromArgb(50, Color.Red));
-                    polygon.Stroke = new Pen(Color.Red);
-                    PolygonClick.Polygons.Add(polygon);
-                    
-                    
+                    OverlayMouseDoubleClick(e, PolygonClick, PolygonListClick);
                 }
                 else if (radioButton3.Checked)
                 {
-                    GMarkerGoogle MarkerWithMyPosition = new GMarkerGoogle(new PointLatLng(y, x), GMarkerGoogleType.orange);
-                    MarkerWithMyPosition.ToolTip = new GMapRoundedToolTip(MarkerWithMyPosition);
-                    MarkerWithMyPosition.ToolTipText = string.Format("Coordinate: \n Lng: {0} \n Lat: {1}", gmap.FromLocalToLatLng(e.X, e.Y).Lng, gmap.FromLocalToLatLng(e.X, e.Y).Lat);
-                    PositionsForUser.Markers.Add(MarkerWithMyPosition);
+                    OverlayMouseDoubleClick(e, PositionsClick);
                 }
-
-                flag = true;
 
                 // Сохранение наших координат (текстовик, цсв, бд, текстбокс, строки, лист)
                 //FileStream fileStream = new FileStream(@"Date\Координаты_ВыбранныеПользователем.txt", FileMode.Append, FileAccess.Write);
@@ -445,13 +456,10 @@ namespace Umnik
 
         GeoCoordinate MarkerClick;
         GeoCoordinate MoveCursor;
-        bool flag = false;
-        private void gmap_MouseMove(object sender, MouseEventArgs e)
+        bool markerPlaced = false;
+        private void DistanceMarkerCursor(double y, double x)
         {
-            double y = gmap.FromLocalToLatLng(e.X, e.Y).Lat;
-            double x = gmap.FromLocalToLatLng(e.X, e.Y).Lng;
-
-            if (flag == true)
+            if (markerPlaced == true)
             {
                 MoveCursor = new GeoCoordinate(y, x);
                 double distance = MarkerClick.GetDistanceTo(MoveCursor);
@@ -467,15 +475,25 @@ namespace Umnik
                 mStrip.Text = " Distance between marker and cursor = 0 m;";
                 kmStrip.Text = "0 km;";
             }
+        }
+        private void gmap_MouseMove(object sender, MouseEventArgs e)
+        {
+            double y = gmap.FromLocalToLatLng(e.X, e.Y).Lat;
+            double x = gmap.FromLocalToLatLng(e.X, e.Y).Lng;
+
+            DistanceMarkerCursor(y, x);
 
             LatStrip.Text = "lat = " + Convert.ToString(y) + ";";
             LngStrip.Text = "   lng = " + Convert.ToString(x) + ";";
 
         }
 
-        public void DistanceBetweenMarkers(GeoCoordinate First, GeoCoordinate Second)
+        bool textBoxesIsNotNull = false;
+        GeoCoordinate First;
+        GeoCoordinate Second;
+        public void DistanceBetweenMarkers(GeoCoordinate firstMarker, GeoCoordinate secondMarker)
         {
-            double distance = First.GetDistanceTo(Second);
+            double distance = firstMarker.GetDistanceTo(secondMarker);
 
             distance = Math.Ceiling(distance);
             double km = distance / 1000;
@@ -484,49 +502,80 @@ namespace Umnik
             textBox5.Text = km.ToString();
         }
 
-        bool count = false;
-        GeoCoordinate First;
-        GeoCoordinate Second;
+        private void MiddleMouseDelete(GMapOverlay overlayClick, List<CPoint> overlayListClick)
+        {
+            for (int i = 0; i < overlayListClick.Count; i++)
+                Points.Add(new PointLatLng(overlayListClick[i].X, overlayListClick[i].Y));
+
+            if (overlayClick == RouteClick)
+            {
+                //Points.Clear();
+                GMapRoute routeClick = new GMapRoute(Points, "routeClick");
+                routeClick.Stroke = new Pen(System.Drawing.Color.Red);
+
+                if (overlayClick.Routes.Count != 0)
+                    overlayClick.Routes.Clear();
+
+                overlayClick.Routes.Add(routeClick);
+                Points.Clear();
+            }
+            if (overlayClick == PolygonClick)
+            {
+                //Points.Clear();
+                var polygon = new GMapPolygon(Points, "Click");
+                polygon.Fill = new SolidBrush(System.Drawing.Color.FromArgb(50, System.Drawing.Color.Blue));
+                polygon.Stroke = new Pen(System.Drawing.Color.Blue);
+
+                if (overlayClick.Polygons.Count != 0)
+                    overlayClick.Polygons.Clear();
+
+                overlayClick.Polygons.Add(polygon);
+                Points.Clear();
+            }
+        }
         private void gmap_OnMarkerClick(GMapMarker item, MouseEventArgs e)
         {
             if (e.Button == MouseButtons.Left)
             {
-                if (count == false)
+                double y = gmap.FromLocalToLatLng(e.X, e.Y).Lat;
+                double x = gmap.FromLocalToLatLng(e.X, e.Y).Lng;
+
+                MarkerClick = new GeoCoordinate(y, x);
+
+
+                markerPlaced = true;
+                if (textBoxesIsNotNull == false)
                 {
                     textBox2.Text = item.Position.Lat.ToString();
                     textBox3.Text = item.Position.Lng.ToString();
                     First = new GeoCoordinate(item.Position.Lat, item.Position.Lng);
-                    count = true;
-                    if (textBox6.Text != "" & textBox7.Text != "")
+                    textBoxesIsNotNull = true;
+                    if (textBox6.Text != "" && textBox7.Text != "")
                     {
                         DistanceBetweenMarkers(First, Second);
                     }
                 }
-                if (count == true & item.Position.Lat.ToString() != textBox2.Text & item.Position.Lng.ToString() != textBox3.Text)
+                if (textBoxesIsNotNull == true &&
+                    item.Position.Lat.ToString() != textBox2.Text &&
+                    item.Position.Lng.ToString() != textBox3.Text)
                 {
                     textBox6.Text = item.Position.Lat.ToString();
                     textBox7.Text = item.Position.Lng.ToString();
 
-                    double x = gmap.FromLocalToLatLng(e.X, e.Y).Lng;
-                    double y = gmap.FromLocalToLatLng(e.X, e.Y).Lat;
-
                     Second = new GeoCoordinate(y, x);
-                    if (textBox2.Text != "" & textBox3.Text != "")
+                    if (textBox2.Text != "" && textBox3.Text != "")
                     {
                         DistanceBetweenMarkers(First, Second);
                     }
-
                 }
 
             }
 
             if (e.Button == MouseButtons.Middle)
             {
-                if (item.Position.Lat == MarkerClick.Latitude & item.Position.Lng == MarkerClick.Longitude)
-                {
-                    flag = false;
-                }
-                if (textBox2.Text == item.Position.Lat.ToString() & textBox3.Text == item.Position.Lng.ToString())
+
+                if (textBox2.Text == item.Position.Lat.ToString() &&
+                    textBox3.Text == item.Position.Lng.ToString())
                 {
                     textBox2.Text = "";
                     textBox3.Text = "";
@@ -534,9 +583,10 @@ namespace Umnik
                     textBox4.Text = "";
                     textBox5.Text = "";
 
-                    count = false;
+                    textBoxesIsNotNull = false;
                 }
-                if (textBox6.Text == item.Position.Lat.ToString() & textBox7.Text == item.Position.Lng.ToString())
+                if (textBox6.Text == item.Position.Lat.ToString() &&
+                    textBox7.Text == item.Position.Lng.ToString())
                 {
                     textBox6.Text = "";
                     textBox7.Text = "";
@@ -547,14 +597,20 @@ namespace Umnik
 
                 // Узнаем слой удаляемого маркера
                 GMapOverlay overlay = item.Overlay;
-
-                if (overlay == RouteClick & overlay.Markers.Count == 0)
+                for (int i = 0; i < overlay.Markers.Count; i++)
+                {
+                    if (overlay.Markers[i].Equals(item))
+                    {
+                        markerPlaced = false;
+                    }
+                }
+                if (overlay == RouteClick && overlay.Markers.Count == 0)
                 {
                     RouteListClick.Clear();
                     RouteClick.Clear();
                     RouteClick.Routes.Clear();
                 }
-                else if (overlay == RouteClick & overlay.Markers.Count != 0)
+                else if (overlay == RouteClick && overlay.Markers.Count != 0)
                 {
                     for (int i = 0; i < RouteListClick.Count; i++)
                     {
@@ -563,25 +619,20 @@ namespace Umnik
                             RouteListClick.RemoveAt(i);
                             RouteClick.Markers.RemoveAt(i);
                             RouteClick.Routes.Clear();
-                            points.Clear();
+                            Points.Clear();
 
-                            for (int j = 0; j < RouteListClick.Count; j++)
-                                points.Add(new PointLatLng(RouteListClick[j].x, RouteListClick[j].y));
-
-                            GMapRoute routeClick = new GMapRoute(points, "routeClick");
-                            routeClick.Stroke = new Pen(Color.Red);
-                            RouteClick.Routes.Add(routeClick);
-                            points.Clear();
+                            MiddleMouseDelete(RouteClick, RouteListClick);
                         }
                     }
                 }
 
-                if (overlay == PolygonClick & overlay.Markers.Count == 0)
+                if (overlay == PolygonClick && overlay.Markers.Count == 0)
                 {
                     PolygonListClick.Clear();
                     PolygonClick.Clear();
+                    PolygonClick.Polygons.Clear();
                 }
-                else if (overlay == PolygonClick & overlay.Markers.Count != 0)
+                else if (overlay == PolygonClick && overlay.Markers.Count != 0)
                 {
                     for (int i = 0; i < PolygonListClick.Count; i++)
                     {
@@ -590,16 +641,9 @@ namespace Umnik
                             PolygonListClick.RemoveAt(i);
                             PolygonClick.Markers.RemoveAt(i);
                             PolygonClick.Polygons.Clear();
-                            points.Clear();
+                            Points.Clear();
 
-                            for (int j = 0; j < PolygonListClick.Count; j++)
-                                points.Add(new PointLatLng(PolygonListClick[j].x, PolygonListClick[j].y));
-
-                            var polygon = new GMapPolygon(points, "Click");
-                            polygon.Fill = new SolidBrush(Color.FromArgb(50, Color.Red));
-                            polygon.Stroke = new Pen(Color.Red);
-                            PolygonClick.Polygons.Add(polygon);
-                            points.Clear();
+                            MiddleMouseDelete(PolygonClick, PolygonListClick);
                         }
                     }
                 }
@@ -608,16 +652,12 @@ namespace Umnik
             }
         }
 
-
-
-
         // Очистка слоя маршрутов
         private void button2_Click(object sender, EventArgs e)
         {
             RouteListClick.Clear();
             RouteClick.Clear();
             RouteClick.Routes.Clear();
-            
         }
 
         // Очистка слоя полигонов
@@ -626,13 +666,13 @@ namespace Umnik
             PolygonListClick.Clear();
             PolygonClick.Markers.Clear();
             PolygonClick.Polygons.Clear();
-            
+
         }
 
         // Пользовательская очистка
         private void button6_Click(object sender, EventArgs e)
         {
-            PositionsForUser.Clear();
+            PositionsClick.Clear();
         }
 
     }
