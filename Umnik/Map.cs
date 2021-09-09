@@ -51,12 +51,6 @@ namespace Umnik
 
             ToolStripMenuItem ClearMap = new ToolStripMenuItem("Очистить карту");
 
-            // Слой меток для двойного клика
-            gmap.Overlays.Add(BetweenClick);
-            gmap.Overlays.Add(PositionsClick);
-            gmap.Overlays.Add(PolygonClick);
-            gmap.Overlays.Add(RouteClick);
-
             // Добавление элементов в меню
             contextMenuStrip1.Items.AddRange(new[] { saveMenuItem, YandexMenuItem, GoogleMenuItem, OpenCycleMapMenuItem, ClearMap });
 
@@ -264,6 +258,7 @@ namespace Umnik
         {
             ListOfXML.Clear();
             ListWithPointsFromXML.Clear();
+            gmap.Overlays.Remove(ListOfXML); ;
         }
 
         private void Map_FormClosing(object sender, FormClosingEventArgs e)
@@ -351,6 +346,14 @@ namespace Umnik
             PolygonListClick.Clear();
             PolygonClick.Markers.Clear();
             PolygonClick.Polygons.Clear();
+
+            BetweenClick.Clear();
+
+            gmap.Overlays.Remove(ListOfXML); ;
+            gmap.Overlays.Remove(PositionsClick);
+            gmap.Overlays.Remove(RouteClick);
+            gmap.Overlays.Remove(PolygonClick);
+            gmap.Overlays.Remove(BetweenClick);
         }
 
         private void trackBar2_Scroll(object sender, EventArgs e)
@@ -439,14 +442,17 @@ namespace Umnik
                 // Добавляем метку на слой
                 if (radioButton1.Checked)
                 {
+                    gmap.Overlays.Add(RouteClick);
                     OverlayMouseDoubleClick(e, RouteClick, RouteListClick);
                 }
                 else if (radioButton2.Checked)
                 {
+                    gmap.Overlays.Add(PolygonClick);
                     OverlayMouseDoubleClick(e, PolygonClick, PolygonListClick);
                 }
                 else if (radioButton3.Checked)
                 {
+                    gmap.Overlays.Add(PositionsClick);
                     OverlayMouseDoubleClick(e, PositionsClick);
                 }
 
@@ -671,6 +677,7 @@ namespace Umnik
 
                 textBoxesIsNotNull = false;
             }
+
             if (textBox6.Text.Length != 0 &&
               textBox7.Text.Length != 0 &&
              Second.Latitude.ToString() == textBox6.Text &&
@@ -684,27 +691,6 @@ namespace Umnik
 
                 textBoxesIsNotNull = false;
             }
-
-
-
-            //if (textBox2.Text.Length != 0 &&
-            //  textBox3.Text.Length != 0 &&
-            //  textBox4.Text.Length != 0 &&
-            //  textBox5.Text.Length != 0 &&
-            //  textBox6.Text.Length != 0 &&
-            //  textBox7.Text.Length != 0)
-            //{
-            //    textBox2.Text = "";
-            //    textBox3.Text = "";
-
-            //    textBox4.Text = "";
-            //    textBox5.Text = "";
-
-            //    textBox6.Text = "";
-            //    textBox7.Text = "";
-
-            //    textBoxesIsNotNull = false;
-
         }
         // Очистка слоя маршрутов
         private void button2_Click(object sender, EventArgs e)
@@ -712,6 +698,8 @@ namespace Umnik
             RouteListClick.Clear();
             RouteClick.Clear();
             RouteClick.Routes.Clear();
+
+            gmap.Overlays.Remove(RouteClick);
 
             ClearTextBoxes();
         }
@@ -723,6 +711,8 @@ namespace Umnik
             PolygonClick.Markers.Clear();
             PolygonClick.Polygons.Clear();
 
+            gmap.Overlays.Remove(PolygonClick);
+
             ClearTextBoxes();
         }
 
@@ -730,6 +720,8 @@ namespace Umnik
         private void button6_Click(object sender, EventArgs e)
         {
             PositionsClick.Clear();
+
+            gmap.Overlays.Remove(PositionsClick);
 
             ClearTextBoxes();
         }
@@ -751,10 +743,13 @@ namespace Umnik
             double azimuth = calculateBearing(start, end);
             List<MockLocation> coords = getLocations(interval, azimuth, start, end);
 
+            gmap.Overlays.Add(BetweenClick);
+
             for (int i = 0; i < coords.Count; i++)
             {
                 // Добавляем метку на слой
                 GMarkerGoogle MyMarker = new GMarkerGoogle(new PointLatLng(coords[i].lat, coords[i].lng), new Bitmap(@"Icons/uav-mini.png"));
+                
                 BetweenClick.Markers.Clear();
                 BetweenClick.Markers.Add(MyMarker);
                 gmap.Refresh();
