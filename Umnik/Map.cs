@@ -15,6 +15,7 @@ using System.Globalization;
 using System.Device.Location;
 
 using static Calc.Program;
+using System.Threading.Tasks;
 
 namespace Umnik
 {
@@ -726,34 +727,37 @@ namespace Umnik
             ClearTextBoxes();
         }
 
-        private void button1_Click(object sender, EventArgs e)
+        private async void button1_Click(object sender, EventArgs e)
         {
-            // point interval in meters
-            double interval = 1;
-            // direction of line in degrees
-            //start point
-            double lat1 = Convert.ToDouble(textBox2.Text);
-            double lng1 = Convert.ToDouble(textBox3.Text);
-            // end point
-            double lat2 = Convert.ToDouble(textBox6.Text);
-            double lng2 = Convert.ToDouble(textBox7.Text);
+            await Task.Run(() => {
+                // point interval in meters
+                double interval = 1;
+                // direction of line in degrees
+                //start point
+                double lat1 = Convert.ToDouble(textBox2.Text);
+                double lng1 = Convert.ToDouble(textBox3.Text);
+                // end point
+                double lat2 = Convert.ToDouble(textBox6.Text);
+                double lng2 = Convert.ToDouble(textBox7.Text);
 
-            MockLocation start = new MockLocation(lat1, lng1);
-            MockLocation end = new MockLocation(lat2, lng2);
-            double azimuth = calculateBearing(start, end);
-            List<MockLocation> coords = getLocations(interval, azimuth, start, end);
+                MockLocation start = new MockLocation(lat1, lng1);
+                MockLocation end = new MockLocation(lat2, lng2);
+                double azimuth = calculateBearing(start, end);
+                List<MockLocation> coords = getLocations(interval, azimuth, start, end);
 
-            gmap.Overlays.Add(BetweenClick);
+                gmap.Overlays.Add(BetweenClick);
 
-            for (int i = 0; i < coords.Count; i++)
-            {
-                // Добавляем метку на слой
-                GMarkerGoogle MyMarker = new GMarkerGoogle(new PointLatLng(coords[i].lat, coords[i].lng), new Bitmap(@"Icons/uav-mini.png"));
-                
-                BetweenClick.Markers.Clear();
-                BetweenClick.Markers.Add(MyMarker);
-                gmap.Refresh();
-            }
+                for (int i = 0; i < coords.Count; i++)
+                {
+                    // Добавляем метку на слой
+                    GMarkerGoogle MyMarker = new GMarkerGoogle(new PointLatLng(coords[i].lat, coords[i].lng), new Bitmap(@"Icons/uav-mini.png"));
+
+                    BetweenClick.Markers.Clear();
+                    BetweenClick.Markers.Add(MyMarker);
+                    gmap.Refresh();
+                }
+            });
+            
         }
     }
 }
