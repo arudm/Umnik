@@ -31,48 +31,48 @@ namespace Umnik
         {
             this.components = new System.ComponentModel.Container();
             this.gmap = new GMap.NET.WindowsForms.GMapControl();
-            this.trackBar1 = new System.Windows.Forms.TrackBar();
+            this.trackBarMapZoom = new System.Windows.Forms.TrackBar();
             this.textBox1 = new System.Windows.Forms.TextBox();
-            this.textBox2 = new System.Windows.Forms.TextBox();
-            this.textBox3 = new System.Windows.Forms.TextBox();
-            this.menuStrip1 = new System.Windows.Forms.MenuStrip();
-            this.загрузитьКоординатыToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.xMLGPXToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.отобразитьToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.очиститьToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.label1 = new System.Windows.Forms.Label();
-            this.label2 = new System.Windows.Forms.Label();
-            this.label3 = new System.Windows.Forms.Label();
-            this.statusStrip1 = new System.Windows.Forms.StatusStrip();
+            this.txtLatY1 = new System.Windows.Forms.TextBox();
+            this.LngX1 = new System.Windows.Forms.TextBox();
+            this.msMainFunctions = new System.Windows.Forms.MenuStrip();
+            this.miLoadCoordinates = new System.Windows.Forms.ToolStripMenuItem();
+            this.miXML_GPX = new System.Windows.Forms.ToolStripMenuItem();
+            this.miShowXML_GPX = new System.Windows.Forms.ToolStripMenuItem();
+            this.miCleanXML_GPX = new System.Windows.Forms.ToolStripMenuItem();
+            this.lblMarkCoord1Desc = new System.Windows.Forms.Label();
+            this.lblLngX1Desc = new System.Windows.Forms.Label();
+            this.lblLatY1Desc = new System.Windows.Forms.Label();
+            this.ssCoordinates = new System.Windows.Forms.StatusStrip();
             this.LatStrip = new System.Windows.Forms.ToolStripStatusLabel();
             this.LngStrip = new System.Windows.Forms.ToolStripStatusLabel();
             this.mStrip = new System.Windows.Forms.ToolStripStatusLabel();
             this.kmStrip = new System.Windows.Forms.ToolStripStatusLabel();
-            this.trackBar2 = new System.Windows.Forms.TrackBar();
-            this.textBox4 = new System.Windows.Forms.TextBox();
-            this.textBox5 = new System.Windows.Forms.TextBox();
+            this.trackBarMarkMode = new System.Windows.Forms.TrackBar();
+            this.txtDistanceInMeters = new System.Windows.Forms.TextBox();
+            this.DistanceInKm = new System.Windows.Forms.TextBox();
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.label4 = new System.Windows.Forms.Label();
-            this.label5 = new System.Windows.Forms.Label();
-            this.textBox6 = new System.Windows.Forms.TextBox();
-            this.textBox7 = new System.Windows.Forms.TextBox();
-            this.label6 = new System.Windows.Forms.Label();
-            this.label7 = new System.Windows.Forms.Label();
-            this.label8 = new System.Windows.Forms.Label();
-            this.label9 = new System.Windows.Forms.Label();
-            this.button2 = new System.Windows.Forms.Button();
-            this.button4 = new System.Windows.Forms.Button();
-            this.button6 = new System.Windows.Forms.Button();
-            this.radioButton1 = new System.Windows.Forms.RadioButton();
-            this.radioButton2 = new System.Windows.Forms.RadioButton();
-            this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.radioButton3 = new System.Windows.Forms.RadioButton();
-            this.button1 = new System.Windows.Forms.Button();
-            ((System.ComponentModel.ISupportInitialize)(this.trackBar1)).BeginInit();
-            this.menuStrip1.SuspendLayout();
-            this.statusStrip1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.trackBar2)).BeginInit();
-            this.groupBox1.SuspendLayout();
+            this.lblMetersDesc = new System.Windows.Forms.Label();
+            this.lblKilometersDesc = new System.Windows.Forms.Label();
+            this.txtLatY2 = new System.Windows.Forms.TextBox();
+            this.LngX2 = new System.Windows.Forms.TextBox();
+            this.lblMarkCoord2Desc = new System.Windows.Forms.Label();
+            this.lblLngX2Desc = new System.Windows.Forms.Label();
+            this.lblLatY2Desc = new System.Windows.Forms.Label();
+            this.lblMarkDistanceDesc = new System.Windows.Forms.Label();
+            this.btnCleanRoute = new System.Windows.Forms.Button();
+            this.btnCleanPoligon = new System.Windows.Forms.Button();
+            this.btnCleanMark = new System.Windows.Forms.Button();
+            this.rbRoute = new System.Windows.Forms.RadioButton();
+            this.rbPolygon = new System.Windows.Forms.RadioButton();
+            this.grpMarksMode = new System.Windows.Forms.GroupBox();
+            this.rbMark = new System.Windows.Forms.RadioButton();
+            this.btnStartFlight = new System.Windows.Forms.Button();
+            ((System.ComponentModel.ISupportInitialize)(this.trackBarMapZoom)).BeginInit();
+            this.msMainFunctions.SuspendLayout();
+            this.ssCoordinates.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.trackBarMarkMode)).BeginInit();
+            this.grpMarksMode.SuspendLayout();
             this.SuspendLayout();
             // 
             // gmap
@@ -105,14 +105,14 @@ namespace Umnik
             this.gmap.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.gmap_MouseDoubleClick);
             this.gmap.MouseMove += new System.Windows.Forms.MouseEventHandler(this.gmap_MouseMove);
             // 
-            // trackBar1
+            // trackBarMapZoom
             // 
-            this.trackBar1.Location = new System.Drawing.Point(1096, 53);
-            this.trackBar1.Name = "trackBar1";
-            this.trackBar1.Orientation = System.Windows.Forms.Orientation.Vertical;
-            this.trackBar1.Size = new System.Drawing.Size(37, 441);
-            this.trackBar1.TabIndex = 3;
-            this.trackBar1.Scroll += new System.EventHandler(this.trackBar1_Scroll);
+            this.trackBarMapZoom.Location = new System.Drawing.Point(1096, 53);
+            this.trackBarMapZoom.Name = "trackBarMapZoom";
+            this.trackBarMapZoom.Orientation = System.Windows.Forms.Orientation.Vertical;
+            this.trackBarMapZoom.Size = new System.Drawing.Size(45, 441);
+            this.trackBarMapZoom.TabIndex = 3;
+            this.trackBarMapZoom.Scroll += new System.EventHandler(this.trackBar1_Scroll);
             // 
             // textBox1
             // 
@@ -122,354 +122,353 @@ namespace Umnik
             this.textBox1.TabIndex = 4;
             this.textBox1.Text = "Zoom";
             // 
-            // textBox2
+            // txtLatY1
             // 
-            this.textBox2.Location = new System.Drawing.Point(49, 519);
-            this.textBox2.Name = "textBox2";
-            this.textBox2.ReadOnly = true;
-            this.textBox2.Size = new System.Drawing.Size(100, 20);
-            this.textBox2.TabIndex = 5;
+            this.txtLatY1.Location = new System.Drawing.Point(49, 519);
+            this.txtLatY1.Name = "txtLatY1";
+            this.txtLatY1.ReadOnly = true;
+            this.txtLatY1.Size = new System.Drawing.Size(100, 20);
+            this.txtLatY1.TabIndex = 5;
             // 
-            // textBox3
+            // LngX1
             // 
-            this.textBox3.Location = new System.Drawing.Point(49, 545);
-            this.textBox3.Name = "textBox3";
-            this.textBox3.ReadOnly = true;
-            this.textBox3.Size = new System.Drawing.Size(100, 20);
-            this.textBox3.TabIndex = 6;
+            this.LngX1.Location = new System.Drawing.Point(49, 545);
+            this.LngX1.Name = "LngX1";
+            this.LngX1.ReadOnly = true;
+            this.LngX1.Size = new System.Drawing.Size(100, 20);
+            this.LngX1.TabIndex = 6;
             // 
-            // menuStrip1
+            // msMainFunctions
             // 
-            this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.загрузитьКоординатыToolStripMenuItem,
-            this.xMLGPXToolStripMenuItem});
-            this.menuStrip1.Location = new System.Drawing.Point(0, 0);
-            this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(1161, 24);
-            this.menuStrip1.TabIndex = 7;
-            this.menuStrip1.Text = "menuStrip1";
+            this.msMainFunctions.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.miLoadCoordinates,
+            this.miXML_GPX});
+            this.msMainFunctions.Location = new System.Drawing.Point(0, 0);
+            this.msMainFunctions.Name = "msMainFunctions";
+            this.msMainFunctions.Size = new System.Drawing.Size(1161, 24);
+            this.msMainFunctions.TabIndex = 7;
+            this.msMainFunctions.Text = "msMainFunctions";
             // 
-            // загрузитьКоординатыToolStripMenuItem
+            // miLoadCoordinates
             // 
-            this.загрузитьКоординатыToolStripMenuItem.Name = "загрузитьКоординатыToolStripMenuItem";
-            this.загрузитьКоординатыToolStripMenuItem.Size = new System.Drawing.Size(137, 20);
-            this.загрузитьКоординатыToolStripMenuItem.Text = "Загрузить координаты";
-            this.загрузитьКоординатыToolStripMenuItem.Click += new System.EventHandler(this.загрузитьКоординатыToolStripMenuItem_Click_1);
+            this.miLoadCoordinates.Name = "miLoadCoordinates";
+            this.miLoadCoordinates.Size = new System.Drawing.Size(143, 20);
+            this.miLoadCoordinates.Text = "Загрузить координаты";
+            this.miLoadCoordinates.Click += new System.EventHandler(this.загрузитьКоординатыToolStripMenuItem_Click_1);
             // 
-            // xMLGPXToolStripMenuItem
+            // miXML_GPX
             // 
-            this.xMLGPXToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.отобразитьToolStripMenuItem,
-            this.очиститьToolStripMenuItem});
-            this.xMLGPXToolStripMenuItem.Name = "xMLGPXToolStripMenuItem";
-            this.xMLGPXToolStripMenuItem.Size = new System.Drawing.Size(68, 20);
-            this.xMLGPXToolStripMenuItem.Text = "XML (GPX)";
+            this.miXML_GPX.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.miShowXML_GPX,
+            this.miCleanXML_GPX});
+            this.miXML_GPX.Name = "miXML_GPX";
+            this.miXML_GPX.Size = new System.Drawing.Size(76, 20);
+            this.miXML_GPX.Text = "XML (GPX)";
             // 
-            // отобразитьToolStripMenuItem
+            // miShowXML_GPX
             // 
-            this.отобразитьToolStripMenuItem.Name = "отобразитьToolStripMenuItem";
-            this.отобразитьToolStripMenuItem.Size = new System.Drawing.Size(135, 22);
-            this.отобразитьToolStripMenuItem.Text = "Отобразить";
-            this.отобразитьToolStripMenuItem.Click += new System.EventHandler(this.отобразитьToolStripMenuItem_Click);
+            this.miShowXML_GPX.Name = "miShowXML_GPX";
+            this.miShowXML_GPX.Size = new System.Drawing.Size(138, 22);
+            this.miShowXML_GPX.Text = "Отобразить";
+            this.miShowXML_GPX.Click += new System.EventHandler(this.отобразитьToolStripMenuItem_Click);
             // 
-            // очиститьToolStripMenuItem
+            // miCleanXML_GPX
             // 
-            this.очиститьToolStripMenuItem.Name = "очиститьToolStripMenuItem";
-            this.очиститьToolStripMenuItem.Size = new System.Drawing.Size(135, 22);
-            this.очиститьToolStripMenuItem.Text = "Очистить";
-            this.очиститьToolStripMenuItem.Click += new System.EventHandler(this.очиститьToolStripMenuItem_Click);
+            this.miCleanXML_GPX.Name = "miCleanXML_GPX";
+            this.miCleanXML_GPX.Size = new System.Drawing.Size(138, 22);
+            this.miCleanXML_GPX.Text = "Очистить";
+            this.miCleanXML_GPX.Click += new System.EventHandler(this.очиститьToolStripMenuItem_Click);
             // 
-            // label1
+            // lblMarkCoord1Desc
             // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(10, 503);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(112, 13);
-            this.label1.TabIndex = 8;
-            this.label1.Text = "Координаты метки 1";
+            this.lblMarkCoord1Desc.AutoSize = true;
+            this.lblMarkCoord1Desc.Location = new System.Drawing.Point(10, 503);
+            this.lblMarkCoord1Desc.Name = "lblMarkCoord1Desc";
+            this.lblMarkCoord1Desc.Size = new System.Drawing.Size(112, 13);
+            this.lblMarkCoord1Desc.TabIndex = 8;
+            this.lblMarkCoord1Desc.Text = "Координаты метки 1";
             // 
-            // label2
+            // lblLngX1Desc
             // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(7, 545);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(36, 13);
-            this.label2.TabIndex = 9;
-            this.label2.Text = "Lng x:";
+            this.lblLngX1Desc.AutoSize = true;
+            this.lblLngX1Desc.Location = new System.Drawing.Point(7, 545);
+            this.lblLngX1Desc.Name = "lblLngX1Desc";
+            this.lblLngX1Desc.Size = new System.Drawing.Size(36, 13);
+            this.lblLngX1Desc.TabIndex = 9;
+            this.lblLngX1Desc.Text = "Lng x:";
             // 
-            // label3
+            // lblLatY1Desc
             // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(7, 522);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(33, 13);
-            this.label3.TabIndex = 10;
-            this.label3.Text = "Lat y:";
+            this.lblLatY1Desc.AutoSize = true;
+            this.lblLatY1Desc.Location = new System.Drawing.Point(7, 522);
+            this.lblLatY1Desc.Name = "lblLatY1Desc";
+            this.lblLatY1Desc.Size = new System.Drawing.Size(33, 13);
+            this.lblLatY1Desc.TabIndex = 10;
+            this.lblLatY1Desc.Text = "Lat y:";
             // 
-            // statusStrip1
+            // ssCoordinates
             // 
-            this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.ssCoordinates.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.LatStrip,
             this.LngStrip,
             this.mStrip,
             this.kmStrip});
-            this.statusStrip1.Location = new System.Drawing.Point(0, 596);
-            this.statusStrip1.Name = "statusStrip1";
-            this.statusStrip1.Size = new System.Drawing.Size(1161, 22);
-            this.statusStrip1.TabIndex = 12;
-            this.statusStrip1.Text = "statusStrip1";
+            this.ssCoordinates.Location = new System.Drawing.Point(0, 596);
+            this.ssCoordinates.Name = "ssCoordinates";
+            this.ssCoordinates.Size = new System.Drawing.Size(1161, 22);
+            this.ssCoordinates.TabIndex = 12;
             // 
             // LatStrip
             // 
             this.LatStrip.Name = "LatStrip";
-            this.LatStrip.Size = new System.Drawing.Size(41, 17);
+            this.LatStrip.Size = new System.Drawing.Size(44, 17);
             this.LatStrip.Text = "latStrip";
             // 
             // LngStrip
             // 
             this.LngStrip.Name = "LngStrip";
-            this.LngStrip.Size = new System.Drawing.Size(43, 17);
+            this.LngStrip.Size = new System.Drawing.Size(48, 17);
             this.LngStrip.Text = "lngStrip";
             // 
             // mStrip
             // 
             this.mStrip.Name = "mStrip";
-            this.mStrip.Size = new System.Drawing.Size(37, 17);
+            this.mStrip.Size = new System.Drawing.Size(42, 17);
             this.mStrip.Text = "mStrip";
             // 
             // kmStrip
             // 
             this.kmStrip.Name = "kmStrip";
-            this.kmStrip.Size = new System.Drawing.Size(42, 17);
+            this.kmStrip.Size = new System.Drawing.Size(48, 17);
             this.kmStrip.Text = "kmStrip";
             // 
-            // trackBar2
+            // trackBarMarkMode
             // 
-            this.trackBar2.Location = new System.Drawing.Point(533, 492);
-            this.trackBar2.Name = "trackBar2";
-            this.trackBar2.Size = new System.Drawing.Size(482, 37);
-            this.trackBar2.TabIndex = 13;
-            this.trackBar2.Scroll += new System.EventHandler(this.trackBar2_Scroll);
+            this.trackBarMarkMode.Location = new System.Drawing.Point(533, 492);
+            this.trackBarMarkMode.Name = "trackBarMarkMode";
+            this.trackBarMarkMode.Size = new System.Drawing.Size(482, 45);
+            this.trackBarMarkMode.TabIndex = 13;
+            this.trackBarMarkMode.Scroll += new System.EventHandler(this.trackBar2_Scroll);
             // 
-            // textBox4
+            // txtDistanceInMeters
             // 
-            this.textBox4.Location = new System.Drawing.Point(345, 519);
-            this.textBox4.Name = "textBox4";
-            this.textBox4.ReadOnly = true;
-            this.textBox4.Size = new System.Drawing.Size(100, 20);
-            this.textBox4.TabIndex = 14;
+            this.txtDistanceInMeters.Location = new System.Drawing.Point(345, 519);
+            this.txtDistanceInMeters.Name = "txtDistanceInMeters";
+            this.txtDistanceInMeters.ReadOnly = true;
+            this.txtDistanceInMeters.Size = new System.Drawing.Size(100, 20);
+            this.txtDistanceInMeters.TabIndex = 14;
             // 
-            // textBox5
+            // DistanceInKm
             // 
-            this.textBox5.Location = new System.Drawing.Point(345, 545);
-            this.textBox5.Name = "textBox5";
-            this.textBox5.ReadOnly = true;
-            this.textBox5.Size = new System.Drawing.Size(100, 20);
-            this.textBox5.TabIndex = 15;
+            this.DistanceInKm.Location = new System.Drawing.Point(345, 545);
+            this.DistanceInKm.Name = "DistanceInKm";
+            this.DistanceInKm.ReadOnly = true;
+            this.DistanceInKm.Size = new System.Drawing.Size(100, 20);
+            this.DistanceInKm.TabIndex = 15;
             // 
             // contextMenuStrip1
             // 
             this.contextMenuStrip1.Name = "contextMenuStrip1";
             this.contextMenuStrip1.Size = new System.Drawing.Size(61, 4);
             // 
-            // label4
+            // lblMetersDesc
             // 
-            this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(451, 522);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(15, 13);
-            this.label4.TabIndex = 16;
-            this.label4.Text = "м";
+            this.lblMetersDesc.AutoSize = true;
+            this.lblMetersDesc.Location = new System.Drawing.Point(451, 522);
+            this.lblMetersDesc.Name = "lblMetersDesc";
+            this.lblMetersDesc.Size = new System.Drawing.Size(15, 13);
+            this.lblMetersDesc.TabIndex = 16;
+            this.lblMetersDesc.Text = "м";
             // 
-            // label5
+            // lblKilometersDesc
             // 
-            this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(451, 548);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(21, 13);
-            this.label5.TabIndex = 17;
-            this.label5.Text = "км";
+            this.lblKilometersDesc.AutoSize = true;
+            this.lblKilometersDesc.Location = new System.Drawing.Point(451, 548);
+            this.lblKilometersDesc.Name = "lblKilometersDesc";
+            this.lblKilometersDesc.Size = new System.Drawing.Size(21, 13);
+            this.lblKilometersDesc.TabIndex = 17;
+            this.lblKilometersDesc.Text = "км";
             // 
-            // textBox6
+            // txtLatY2
             // 
-            this.textBox6.Location = new System.Drawing.Point(208, 519);
-            this.textBox6.Name = "textBox6";
-            this.textBox6.ReadOnly = true;
-            this.textBox6.Size = new System.Drawing.Size(100, 20);
-            this.textBox6.TabIndex = 5;
+            this.txtLatY2.Location = new System.Drawing.Point(208, 519);
+            this.txtLatY2.Name = "txtLatY2";
+            this.txtLatY2.ReadOnly = true;
+            this.txtLatY2.Size = new System.Drawing.Size(100, 20);
+            this.txtLatY2.TabIndex = 5;
             // 
-            // textBox7
+            // LngX2
             // 
-            this.textBox7.Location = new System.Drawing.Point(208, 545);
-            this.textBox7.Name = "textBox7";
-            this.textBox7.ReadOnly = true;
-            this.textBox7.Size = new System.Drawing.Size(100, 20);
-            this.textBox7.TabIndex = 6;
+            this.LngX2.Location = new System.Drawing.Point(208, 545);
+            this.LngX2.Name = "LngX2";
+            this.LngX2.ReadOnly = true;
+            this.LngX2.Size = new System.Drawing.Size(100, 20);
+            this.LngX2.TabIndex = 6;
             // 
-            // label6
+            // lblMarkCoord2Desc
             // 
-            this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(169, 503);
-            this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(112, 13);
-            this.label6.TabIndex = 8;
-            this.label6.Text = "Координаты метки 2";
+            this.lblMarkCoord2Desc.AutoSize = true;
+            this.lblMarkCoord2Desc.Location = new System.Drawing.Point(169, 503);
+            this.lblMarkCoord2Desc.Name = "lblMarkCoord2Desc";
+            this.lblMarkCoord2Desc.Size = new System.Drawing.Size(112, 13);
+            this.lblMarkCoord2Desc.TabIndex = 8;
+            this.lblMarkCoord2Desc.Text = "Координаты метки 2";
             // 
-            // label7
+            // lblLngX2Desc
             // 
-            this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(169, 545);
-            this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(36, 13);
-            this.label7.TabIndex = 9;
-            this.label7.Text = "Lng x:";
+            this.lblLngX2Desc.AutoSize = true;
+            this.lblLngX2Desc.Location = new System.Drawing.Point(169, 545);
+            this.lblLngX2Desc.Name = "lblLngX2Desc";
+            this.lblLngX2Desc.Size = new System.Drawing.Size(36, 13);
+            this.lblLngX2Desc.TabIndex = 9;
+            this.lblLngX2Desc.Text = "Lng x:";
             // 
-            // label8
+            // lblLatY2Desc
             // 
-            this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(169, 522);
-            this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(33, 13);
-            this.label8.TabIndex = 10;
-            this.label8.Text = "Lat y:";
+            this.lblLatY2Desc.AutoSize = true;
+            this.lblLatY2Desc.Location = new System.Drawing.Point(169, 522);
+            this.lblLatY2Desc.Name = "lblLatY2Desc";
+            this.lblLatY2Desc.Size = new System.Drawing.Size(33, 13);
+            this.lblLatY2Desc.TabIndex = 10;
+            this.lblLatY2Desc.Text = "Lat y:";
             // 
-            // label9
+            // lblMarkDistanceDesc
             // 
-            this.label9.AutoSize = true;
-            this.label9.Location = new System.Drawing.Point(345, 503);
-            this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(151, 13);
-            this.label9.TabIndex = 18;
-            this.label9.Text = "Расстояние между метками";
+            this.lblMarkDistanceDesc.AutoSize = true;
+            this.lblMarkDistanceDesc.Location = new System.Drawing.Point(345, 503);
+            this.lblMarkDistanceDesc.Name = "lblMarkDistanceDesc";
+            this.lblMarkDistanceDesc.Size = new System.Drawing.Size(151, 13);
+            this.lblMarkDistanceDesc.TabIndex = 18;
+            this.lblMarkDistanceDesc.Text = "Расстояние между метками";
             // 
-            // button2
+            // btnCleanRoute
             // 
-            this.button2.Location = new System.Drawing.Point(0, 42);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(75, 23);
-            this.button2.TabIndex = 20;
-            this.button2.Text = "Очистка";
-            this.button2.UseVisualStyleBackColor = true;
-            this.button2.Click += new System.EventHandler(this.button2_Click);
+            this.btnCleanRoute.Location = new System.Drawing.Point(0, 42);
+            this.btnCleanRoute.Name = "btnCleanRoute";
+            this.btnCleanRoute.Size = new System.Drawing.Size(75, 23);
+            this.btnCleanRoute.TabIndex = 20;
+            this.btnCleanRoute.Text = "Очистка";
+            this.btnCleanRoute.UseVisualStyleBackColor = true;
+            this.btnCleanRoute.Click += new System.EventHandler(this.CleanRouteLayer);
             // 
-            // button4
+            // btnCleanPoligon
             // 
-            this.button4.Location = new System.Drawing.Point(81, 42);
-            this.button4.Name = "button4";
-            this.button4.Size = new System.Drawing.Size(75, 23);
-            this.button4.TabIndex = 22;
-            this.button4.Text = "Очистка";
-            this.button4.UseVisualStyleBackColor = true;
-            this.button4.Click += new System.EventHandler(this.button4_Click);
+            this.btnCleanPoligon.Location = new System.Drawing.Point(81, 42);
+            this.btnCleanPoligon.Name = "btnCleanPoligon";
+            this.btnCleanPoligon.Size = new System.Drawing.Size(75, 23);
+            this.btnCleanPoligon.TabIndex = 22;
+            this.btnCleanPoligon.Text = "Очистка";
+            this.btnCleanPoligon.UseVisualStyleBackColor = true;
+            this.btnCleanPoligon.Click += new System.EventHandler(this.CleanPolygonLayer);
             // 
-            // button6
+            // btnCleanMark
             // 
-            this.button6.Location = new System.Drawing.Point(162, 42);
-            this.button6.Name = "button6";
-            this.button6.Size = new System.Drawing.Size(75, 23);
-            this.button6.TabIndex = 24;
-            this.button6.Text = "Очистка";
-            this.button6.UseVisualStyleBackColor = true;
-            this.button6.Click += new System.EventHandler(this.button6_Click);
+            this.btnCleanMark.Location = new System.Drawing.Point(162, 42);
+            this.btnCleanMark.Name = "btnCleanMark";
+            this.btnCleanMark.Size = new System.Drawing.Size(75, 23);
+            this.btnCleanMark.TabIndex = 24;
+            this.btnCleanMark.Text = "Очистка";
+            this.btnCleanMark.UseVisualStyleBackColor = true;
+            this.btnCleanMark.Click += new System.EventHandler(this.CleanMarks);
             // 
-            // radioButton1
+            // rbRoute
             // 
-            this.radioButton1.AutoSize = true;
-            this.radioButton1.Location = new System.Drawing.Point(6, 19);
-            this.radioButton1.Name = "radioButton1";
-            this.radioButton1.Size = new System.Drawing.Size(70, 17);
-            this.radioButton1.TabIndex = 29;
-            this.radioButton1.TabStop = true;
-            this.radioButton1.Text = "Маршрут";
-            this.radioButton1.UseVisualStyleBackColor = true;
+            this.rbRoute.AutoSize = true;
+            this.rbRoute.Location = new System.Drawing.Point(6, 19);
+            this.rbRoute.Name = "rbRoute";
+            this.rbRoute.Size = new System.Drawing.Size(70, 17);
+            this.rbRoute.TabIndex = 29;
+            this.rbRoute.TabStop = true;
+            this.rbRoute.Text = "Маршрут";
+            this.rbRoute.UseVisualStyleBackColor = true;
             // 
-            // radioButton2
+            // rbPolygon
             // 
-            this.radioButton2.AutoSize = true;
-            this.radioButton2.Location = new System.Drawing.Point(82, 19);
-            this.radioButton2.Name = "radioButton2";
-            this.radioButton2.Size = new System.Drawing.Size(68, 17);
-            this.radioButton2.TabIndex = 30;
-            this.radioButton2.TabStop = true;
-            this.radioButton2.Text = "Полигон";
-            this.radioButton2.UseVisualStyleBackColor = true;
+            this.rbPolygon.AutoSize = true;
+            this.rbPolygon.Location = new System.Drawing.Point(82, 19);
+            this.rbPolygon.Name = "rbPolygon";
+            this.rbPolygon.Size = new System.Drawing.Size(68, 17);
+            this.rbPolygon.TabIndex = 30;
+            this.rbPolygon.TabStop = true;
+            this.rbPolygon.Text = "Полигон";
+            this.rbPolygon.UseVisualStyleBackColor = true;
             // 
-            // groupBox1
+            // grpMarksMode
             // 
-            this.groupBox1.Controls.Add(this.radioButton3);
-            this.groupBox1.Controls.Add(this.radioButton1);
-            this.groupBox1.Controls.Add(this.radioButton2);
-            this.groupBox1.Controls.Add(this.button6);
-            this.groupBox1.Controls.Add(this.button2);
-            this.groupBox1.Controls.Add(this.button4);
-            this.groupBox1.Location = new System.Drawing.Point(533, 522);
-            this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(238, 71);
-            this.groupBox1.TabIndex = 31;
-            this.groupBox1.TabStop = false;
-            this.groupBox1.Text = "Режимы меток";
+            this.grpMarksMode.Controls.Add(this.rbMark);
+            this.grpMarksMode.Controls.Add(this.rbRoute);
+            this.grpMarksMode.Controls.Add(this.rbPolygon);
+            this.grpMarksMode.Controls.Add(this.btnCleanMark);
+            this.grpMarksMode.Controls.Add(this.btnCleanRoute);
+            this.grpMarksMode.Controls.Add(this.btnCleanPoligon);
+            this.grpMarksMode.Location = new System.Drawing.Point(533, 522);
+            this.grpMarksMode.Name = "grpMarksMode";
+            this.grpMarksMode.Size = new System.Drawing.Size(238, 71);
+            this.grpMarksMode.TabIndex = 31;
+            this.grpMarksMode.TabStop = false;
+            this.grpMarksMode.Text = "Режимы меток";
             // 
-            // radioButton3
+            // rbMark
             // 
-            this.radioButton3.AutoSize = true;
-            this.radioButton3.Location = new System.Drawing.Point(162, 19);
-            this.radioButton3.Name = "radioButton3";
-            this.radioButton3.Size = new System.Drawing.Size(57, 17);
-            this.radioButton3.TabIndex = 31;
-            this.radioButton3.TabStop = true;
-            this.radioButton3.Text = "Метка";
-            this.radioButton3.UseVisualStyleBackColor = true;
+            this.rbMark.AutoSize = true;
+            this.rbMark.Location = new System.Drawing.Point(162, 19);
+            this.rbMark.Name = "rbMark";
+            this.rbMark.Size = new System.Drawing.Size(57, 17);
+            this.rbMark.TabIndex = 31;
+            this.rbMark.TabStop = true;
+            this.rbMark.Text = "Метка";
+            this.rbMark.UseVisualStyleBackColor = true;
             // 
-            // button1
+            // btnStartFlight
             // 
-            this.button1.Location = new System.Drawing.Point(799, 564);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(75, 23);
-            this.button1.TabIndex = 32;
-            this.button1.Text = "Полет";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
+            this.btnStartFlight.Location = new System.Drawing.Point(799, 564);
+            this.btnStartFlight.Name = "btnStartFlight";
+            this.btnStartFlight.Size = new System.Drawing.Size(75, 23);
+            this.btnStartFlight.TabIndex = 32;
+            this.btnStartFlight.Text = "Полет";
+            this.btnStartFlight.UseVisualStyleBackColor = true;
+            this.btnStartFlight.Click += new System.EventHandler(this.StartFlight);
             // 
             // Map
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1161, 618);
-            this.Controls.Add(this.button1);
-            this.Controls.Add(this.groupBox1);
-            this.Controls.Add(this.label9);
-            this.Controls.Add(this.label5);
-            this.Controls.Add(this.label4);
-            this.Controls.Add(this.textBox5);
-            this.Controls.Add(this.textBox4);
-            this.Controls.Add(this.trackBar2);
-            this.Controls.Add(this.statusStrip1);
-            this.Controls.Add(this.label8);
-            this.Controls.Add(this.label3);
-            this.Controls.Add(this.label7);
-            this.Controls.Add(this.label2);
-            this.Controls.Add(this.label6);
-            this.Controls.Add(this.label1);
-            this.Controls.Add(this.textBox7);
-            this.Controls.Add(this.textBox3);
-            this.Controls.Add(this.textBox6);
-            this.Controls.Add(this.textBox2);
+            this.Controls.Add(this.btnStartFlight);
+            this.Controls.Add(this.grpMarksMode);
+            this.Controls.Add(this.lblMarkDistanceDesc);
+            this.Controls.Add(this.lblKilometersDesc);
+            this.Controls.Add(this.lblMetersDesc);
+            this.Controls.Add(this.DistanceInKm);
+            this.Controls.Add(this.txtDistanceInMeters);
+            this.Controls.Add(this.trackBarMarkMode);
+            this.Controls.Add(this.ssCoordinates);
+            this.Controls.Add(this.lblLatY2Desc);
+            this.Controls.Add(this.lblLatY1Desc);
+            this.Controls.Add(this.lblLngX2Desc);
+            this.Controls.Add(this.lblLngX1Desc);
+            this.Controls.Add(this.lblMarkCoord2Desc);
+            this.Controls.Add(this.lblMarkCoord1Desc);
+            this.Controls.Add(this.LngX2);
+            this.Controls.Add(this.LngX1);
+            this.Controls.Add(this.txtLatY2);
+            this.Controls.Add(this.txtLatY1);
             this.Controls.Add(this.textBox1);
-            this.Controls.Add(this.trackBar1);
+            this.Controls.Add(this.trackBarMapZoom);
             this.Controls.Add(this.gmap);
-            this.Controls.Add(this.menuStrip1);
-            this.MainMenuStrip = this.menuStrip1;
+            this.Controls.Add(this.msMainFunctions);
+            this.MainMenuStrip = this.msMainFunctions;
             this.Name = "Map";
             this.Text = "Map";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Map_FormClosing);
-            ((System.ComponentModel.ISupportInitialize)(this.trackBar1)).EndInit();
-            this.menuStrip1.ResumeLayout(false);
-            this.menuStrip1.PerformLayout();
-            this.statusStrip1.ResumeLayout(false);
-            this.statusStrip1.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.trackBar2)).EndInit();
-            this.groupBox1.ResumeLayout(false);
-            this.groupBox1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.trackBarMapZoom)).EndInit();
+            this.msMainFunctions.ResumeLayout(false);
+            this.msMainFunctions.PerformLayout();
+            this.ssCoordinates.ResumeLayout(false);
+            this.ssCoordinates.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.trackBarMarkMode)).EndInit();
+            this.grpMarksMode.ResumeLayout(false);
+            this.grpMarksMode.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -478,43 +477,43 @@ namespace Umnik
         #endregion
 
         private GMap.NET.WindowsForms.GMapControl gmap;
-        private System.Windows.Forms.TrackBar trackBar1;
+        private System.Windows.Forms.TrackBar trackBarMapZoom;
         private System.Windows.Forms.TextBox textBox1;
-        private System.Windows.Forms.TextBox textBox2;
-        private System.Windows.Forms.TextBox textBox3;
-        private System.Windows.Forms.MenuStrip menuStrip1;
-        private System.Windows.Forms.ToolStripMenuItem загрузитьКоординатыToolStripMenuItem;
-        private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.ToolStripMenuItem xMLGPXToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem отобразитьToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem очиститьToolStripMenuItem;
-        private System.Windows.Forms.StatusStrip statusStrip1;
+        private System.Windows.Forms.TextBox txtLatY1;
+        private System.Windows.Forms.TextBox LngX1;
+        private System.Windows.Forms.MenuStrip msMainFunctions;
+        private System.Windows.Forms.ToolStripMenuItem miLoadCoordinates;
+        private System.Windows.Forms.Label lblMarkCoord1Desc;
+        private System.Windows.Forms.Label lblLngX1Desc;
+        private System.Windows.Forms.Label lblLatY1Desc;
+        private System.Windows.Forms.ToolStripMenuItem miXML_GPX;
+        private System.Windows.Forms.ToolStripMenuItem miShowXML_GPX;
+        private System.Windows.Forms.ToolStripMenuItem miCleanXML_GPX;
+        private System.Windows.Forms.StatusStrip ssCoordinates;
         private System.Windows.Forms.ToolStripStatusLabel LatStrip;
         private System.Windows.Forms.ToolStripStatusLabel LngStrip;
-        private System.Windows.Forms.TrackBar trackBar2;
-        private System.Windows.Forms.TextBox textBox4;
-        private System.Windows.Forms.TextBox textBox5;
+        private System.Windows.Forms.TrackBar trackBarMarkMode;
+        private System.Windows.Forms.TextBox txtDistanceInMeters;
+        private System.Windows.Forms.TextBox DistanceInKm;
         private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
-        private System.Windows.Forms.Label label4;
-        private System.Windows.Forms.Label label5;
-        private System.Windows.Forms.TextBox textBox6;
-        private System.Windows.Forms.TextBox textBox7;
-        private System.Windows.Forms.Label label6;
-        private System.Windows.Forms.Label label7;
-        private System.Windows.Forms.Label label8;
+        private System.Windows.Forms.Label lblMetersDesc;
+        private System.Windows.Forms.Label lblKilometersDesc;
+        private System.Windows.Forms.TextBox txtLatY2;
+        private System.Windows.Forms.TextBox LngX2;
+        private System.Windows.Forms.Label lblMarkCoord2Desc;
+        private System.Windows.Forms.Label lblLngX2Desc;
+        private System.Windows.Forms.Label lblLatY2Desc;
         private System.Windows.Forms.ToolStripStatusLabel mStrip;
         private System.Windows.Forms.ToolStripStatusLabel kmStrip;
-        private System.Windows.Forms.Label label9;
-        private System.Windows.Forms.Button button2;
-        private System.Windows.Forms.Button button4;
-        private System.Windows.Forms.Button button6;
-        private System.Windows.Forms.RadioButton radioButton1;
-        private System.Windows.Forms.RadioButton radioButton2;
-        private System.Windows.Forms.GroupBox groupBox1;
-        private System.Windows.Forms.RadioButton radioButton3;
-        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Label lblMarkDistanceDesc;
+        private System.Windows.Forms.Button btnCleanRoute;
+        private System.Windows.Forms.Button btnCleanPoligon;
+        private System.Windows.Forms.Button btnCleanMark;
+        private System.Windows.Forms.RadioButton rbRoute;
+        private System.Windows.Forms.RadioButton rbPolygon;
+        private System.Windows.Forms.GroupBox grpMarksMode;
+        private System.Windows.Forms.RadioButton rbMark;
+        private System.Windows.Forms.Button btnStartFlight;
     }
 }
 
