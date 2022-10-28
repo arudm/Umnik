@@ -32,7 +32,7 @@ namespace Umnik
             this.components = new System.ComponentModel.Container();
             this.gmap = new GMap.NET.WindowsForms.GMapControl();
             this.trackBarMapZoom = new System.Windows.Forms.TrackBar();
-            this.textBox1 = new System.Windows.Forms.TextBox();
+            this.txtZoom = new System.Windows.Forms.TextBox();
             this.txtLatY1 = new System.Windows.Forms.TextBox();
             this.LngX1 = new System.Windows.Forms.TextBox();
             this.msMainFunctions = new System.Windows.Forms.MenuStrip();
@@ -101,6 +101,7 @@ namespace Umnik
             this.gmap.TabIndex = 0;
             this.gmap.Zoom = 0D;
             this.gmap.OnMarkerClick += new GMap.NET.WindowsForms.MarkerClick(this.gmap_OnMarkerClick);
+            this.gmap.OnMapZoomChanged += new GMap.NET.MapZoomChanged(this.gmap_OnMapZoomChanged);
             this.gmap.Load += new System.EventHandler(this.gMapControl1_Load);
             this.gmap.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.gmap_MouseDoubleClick);
             this.gmap.MouseMove += new System.Windows.Forms.MouseEventHandler(this.gmap_MouseMove);
@@ -112,15 +113,15 @@ namespace Umnik
             this.trackBarMapZoom.Orientation = System.Windows.Forms.Orientation.Vertical;
             this.trackBarMapZoom.Size = new System.Drawing.Size(45, 441);
             this.trackBarMapZoom.TabIndex = 3;
-            this.trackBarMapZoom.Scroll += new System.EventHandler(this.trackBar1_Scroll);
+            this.trackBarMapZoom.Scroll += new System.EventHandler(this.ChangeMapZoom);
             // 
-            // textBox1
+            // txtZoom
             // 
-            this.textBox1.Location = new System.Drawing.Point(1096, 27);
-            this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(33, 20);
-            this.textBox1.TabIndex = 4;
-            this.textBox1.Text = "Zoom";
+            this.txtZoom.Location = new System.Drawing.Point(1096, 27);
+            this.txtZoom.Name = "txtZoom";
+            this.txtZoom.Size = new System.Drawing.Size(33, 20);
+            this.txtZoom.TabIndex = 4;
+            this.txtZoom.Text = "Zoom";
             // 
             // txtLatY1
             // 
@@ -154,7 +155,7 @@ namespace Umnik
             this.miLoadCoordinates.Name = "miLoadCoordinates";
             this.miLoadCoordinates.Size = new System.Drawing.Size(143, 20);
             this.miLoadCoordinates.Text = "Загрузить координаты";
-            this.miLoadCoordinates.Click += new System.EventHandler(this.загрузитьКоординатыToolStripMenuItem_Click_1);
+            this.miLoadCoordinates.Click += new System.EventHandler(this.LoadCoordinatesFromFile);
             // 
             // miXML_GPX
             // 
@@ -170,14 +171,14 @@ namespace Umnik
             this.miShowXML_GPX.Name = "miShowXML_GPX";
             this.miShowXML_GPX.Size = new System.Drawing.Size(138, 22);
             this.miShowXML_GPX.Text = "Отобразить";
-            this.miShowXML_GPX.Click += new System.EventHandler(this.отобразитьToolStripMenuItem_Click);
+            this.miShowXML_GPX.Click += new System.EventHandler(this.ShowMarksOnMap);
             // 
             // miCleanXML_GPX
             // 
             this.miCleanXML_GPX.Name = "miCleanXML_GPX";
             this.miCleanXML_GPX.Size = new System.Drawing.Size(138, 22);
             this.miCleanXML_GPX.Text = "Очистить";
-            this.miCleanXML_GPX.Click += new System.EventHandler(this.очиститьToolStripMenuItem_Click);
+            this.miCleanXML_GPX.Click += new System.EventHandler(this.ClearMarksFromMap);
             // 
             // lblMarkCoord1Desc
             // 
@@ -453,7 +454,7 @@ namespace Umnik
             this.Controls.Add(this.LngX1);
             this.Controls.Add(this.txtLatY2);
             this.Controls.Add(this.txtLatY1);
-            this.Controls.Add(this.textBox1);
+            this.Controls.Add(this.txtZoom);
             this.Controls.Add(this.trackBarMapZoom);
             this.Controls.Add(this.gmap);
             this.Controls.Add(this.msMainFunctions);
@@ -478,7 +479,7 @@ namespace Umnik
 
         private GMap.NET.WindowsForms.GMapControl gmap;
         private System.Windows.Forms.TrackBar trackBarMapZoom;
-        private System.Windows.Forms.TextBox textBox1;
+        private System.Windows.Forms.TextBox txtZoom;
         private System.Windows.Forms.TextBox txtLatY1;
         private System.Windows.Forms.TextBox LngX1;
         private System.Windows.Forms.MenuStrip msMainFunctions;
