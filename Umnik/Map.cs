@@ -155,6 +155,7 @@ namespace Umnik
                         catch
                         {
                             MessageBox.Show("Ошибка чтения текстового файла", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            return;
                         }
                         MessageBox.Show("Данные успешно прочитаны");
                     }
