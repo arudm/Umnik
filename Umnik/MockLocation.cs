@@ -39,15 +39,10 @@ namespace Calc
             coords.Add(new MockLocation(end.lat, end.lng));
             return coords;
         }
-
-
-
         public static double ToRadians(this double val)
         {
             return (Math.PI / 180) * val;
         }
-
-
 
         /**
          * calculates the distance between two lat, long coordinate pairs
@@ -66,8 +61,6 @@ namespace Calc
             double d = RADIUS_OF_EARTH * c;
             return d;
         }
-
-
 
         /**
          * returns the lat an long of destination point given the start lat, long, aziuth, and distance
@@ -91,8 +84,6 @@ namespace Calc
             lon2 = ToDegrees(lon2);
             return new MockLocation(lat2, lon2);
         }
-
-
 
         /**
          * calculates the azimuth in degrees from start point to end point");
@@ -124,15 +115,11 @@ namespace Calc
             return bearing;
         }
 
-
-
         public static double ToDegrees(double radians)
         {
             double degrees = (180 / Math.PI) * radians;
             return (degrees);
         }
-
-
 
         public class MockLocation
         {
