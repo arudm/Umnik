@@ -59,6 +59,7 @@
             this.btnRemoveDrone.TabIndex = 2;
             this.btnRemoveDrone.Text = "Удалить";
             this.btnRemoveDrone.UseVisualStyleBackColor = true;
+            this.btnRemoveDrone.Click += new System.EventHandler(this.btnRemoveDrone_Click);
             // 
             // DronesForm
             // 

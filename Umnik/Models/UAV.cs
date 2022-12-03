@@ -5,6 +5,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 using System.Xml.Linq;
 
 namespace Umnik
@@ -16,7 +17,8 @@ namespace Umnik
         Green,
         Yellow,
         Blue,
-        Orange
+        Orange,
+        MaxDroneColour
     }
     internal class UAV
     {
@@ -54,7 +56,7 @@ namespace Umnik
 
         public UAV(int number = 0, PointLatLng coordinates = new PointLatLng())
         {
-            int colour = number + 1;
+            int colour = number;
             Name = colour.ToString();
             DroneColor = (DroneColour)colour;
             Path = $@"Icons/uav-mini-{DroneColor.ToString().ToLower()}.png";

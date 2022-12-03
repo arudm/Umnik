@@ -46,7 +46,7 @@ namespace Umnik
         private void gMapControl1_Load(object sender, EventArgs e)
         {
             // Подгружаем в память картинку дрона
-            _dronePicture = new Bitmap(@"Icons/uav-mini.png");
+            _dronePicture = new Bitmap(@"Icons/uav-mini-black.png");
 
             // Создание элементов меню
             ToolStripMenuItem YandexMenuItem = new ToolStripMenuItem("Установить Яндекс-карту");
@@ -768,7 +768,6 @@ namespace Umnik
             {
                 // Добавляем метку на слой
                 GMarkerGoogle MyMarker = new GMarkerGoogle(new PointLatLng(item.Coordinates.Lat, item.Coordinates.Lng), item.Icon);
-                //DronesOverlay.Markers.Clear();
                 DronesOverlay.Markers.Add(MyMarker);
             }
             gmap.Refresh();
