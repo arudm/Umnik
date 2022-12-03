@@ -1,7 +1,7 @@
 ﻿
 namespace Umnik
 {
-    partial class Map
+    partial class MapForm
     {
         /// <summary>
         /// Обязательная переменная конструктора.
@@ -40,6 +40,7 @@ namespace Umnik
             this.miXML_GPX = new System.Windows.Forms.ToolStripMenuItem();
             this.miShowXML_GPX = new System.Windows.Forms.ToolStripMenuItem();
             this.miCleanXML_GPX = new System.Windows.Forms.ToolStripMenuItem();
+            this.списокДроновToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.lblMarkCoord1Desc = new System.Windows.Forms.Label();
             this.lblLngX1Desc = new System.Windows.Forms.Label();
             this.lblLatY1Desc = new System.Windows.Forms.Label();
@@ -68,6 +69,8 @@ namespace Umnik
             this.grpMarksMode = new System.Windows.Forms.GroupBox();
             this.rbMark = new System.Windows.Forms.RadioButton();
             this.btnStartFlight = new System.Windows.Forms.Button();
+            this.btnCancelFlight = new System.Windows.Forms.Button();
+            this.btnBackHome = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.trackBarMapZoom)).BeginInit();
             this.msMainFunctions.SuspendLayout();
             this.ssCoordinates.SuspendLayout();
@@ -111,7 +114,7 @@ namespace Umnik
             this.trackBarMapZoom.Location = new System.Drawing.Point(1096, 53);
             this.trackBarMapZoom.Name = "trackBarMapZoom";
             this.trackBarMapZoom.Orientation = System.Windows.Forms.Orientation.Vertical;
-            this.trackBarMapZoom.Size = new System.Drawing.Size(45, 441);
+            this.trackBarMapZoom.Size = new System.Drawing.Size(37, 441);
             this.trackBarMapZoom.TabIndex = 3;
             this.trackBarMapZoom.Scroll += new System.EventHandler(this.ChangeMapZoom);
             // 
@@ -143,7 +146,8 @@ namespace Umnik
             // 
             this.msMainFunctions.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.miLoadCoordinates,
-            this.miXML_GPX});
+            this.miXML_GPX,
+            this.списокДроновToolStripMenuItem});
             this.msMainFunctions.Location = new System.Drawing.Point(0, 0);
             this.msMainFunctions.Name = "msMainFunctions";
             this.msMainFunctions.Size = new System.Drawing.Size(1161, 24);
@@ -153,7 +157,7 @@ namespace Umnik
             // miLoadCoordinates
             // 
             this.miLoadCoordinates.Name = "miLoadCoordinates";
-            this.miLoadCoordinates.Size = new System.Drawing.Size(143, 20);
+            this.miLoadCoordinates.Size = new System.Drawing.Size(137, 20);
             this.miLoadCoordinates.Text = "Загрузить координаты";
             this.miLoadCoordinates.Click += new System.EventHandler(this.LoadCoordinatesFromFile);
             // 
@@ -163,22 +167,29 @@ namespace Umnik
             this.miShowXML_GPX,
             this.miCleanXML_GPX});
             this.miXML_GPX.Name = "miXML_GPX";
-            this.miXML_GPX.Size = new System.Drawing.Size(76, 20);
+            this.miXML_GPX.Size = new System.Drawing.Size(68, 20);
             this.miXML_GPX.Text = "XML (GPX)";
             // 
             // miShowXML_GPX
             // 
             this.miShowXML_GPX.Name = "miShowXML_GPX";
-            this.miShowXML_GPX.Size = new System.Drawing.Size(138, 22);
+            this.miShowXML_GPX.Size = new System.Drawing.Size(135, 22);
             this.miShowXML_GPX.Text = "Отобразить";
             this.miShowXML_GPX.Click += new System.EventHandler(this.ShowMarksOnMap);
             // 
             // miCleanXML_GPX
             // 
             this.miCleanXML_GPX.Name = "miCleanXML_GPX";
-            this.miCleanXML_GPX.Size = new System.Drawing.Size(138, 22);
+            this.miCleanXML_GPX.Size = new System.Drawing.Size(135, 22);
             this.miCleanXML_GPX.Text = "Очистить";
             this.miCleanXML_GPX.Click += new System.EventHandler(this.ClearMarksFromMap);
+            // 
+            // списокДроновToolStripMenuItem
+            // 
+            this.списокДроновToolStripMenuItem.Name = "списокДроновToolStripMenuItem";
+            this.списокДроновToolStripMenuItem.Size = new System.Drawing.Size(95, 20);
+            this.списокДроновToolStripMenuItem.Text = "Список дронов";
+            this.списокДроновToolStripMenuItem.Click += new System.EventHandler(this.списокДроновToolStripMenuItem_Click);
             // 
             // lblMarkCoord1Desc
             // 
@@ -222,32 +233,32 @@ namespace Umnik
             // LatStrip
             // 
             this.LatStrip.Name = "LatStrip";
-            this.LatStrip.Size = new System.Drawing.Size(44, 17);
+            this.LatStrip.Size = new System.Drawing.Size(41, 17);
             this.LatStrip.Text = "latStrip";
             // 
             // LngStrip
             // 
             this.LngStrip.Name = "LngStrip";
-            this.LngStrip.Size = new System.Drawing.Size(48, 17);
+            this.LngStrip.Size = new System.Drawing.Size(43, 17);
             this.LngStrip.Text = "lngStrip";
             // 
             // mStrip
             // 
             this.mStrip.Name = "mStrip";
-            this.mStrip.Size = new System.Drawing.Size(42, 17);
+            this.mStrip.Size = new System.Drawing.Size(37, 17);
             this.mStrip.Text = "mStrip";
             // 
             // kmStrip
             // 
             this.kmStrip.Name = "kmStrip";
-            this.kmStrip.Size = new System.Drawing.Size(48, 17);
+            this.kmStrip.Size = new System.Drawing.Size(42, 17);
             this.kmStrip.Text = "kmStrip";
             // 
             // trackBarMarkMode
             // 
             this.trackBarMarkMode.Location = new System.Drawing.Point(533, 492);
             this.trackBarMarkMode.Name = "trackBarMarkMode";
-            this.trackBarMarkMode.Size = new System.Drawing.Size(482, 45);
+            this.trackBarMarkMode.Size = new System.Drawing.Size(482, 37);
             this.trackBarMarkMode.TabIndex = 13;
             this.trackBarMarkMode.Scroll += new System.EventHandler(this.trackBar2_Scroll);
             // 
@@ -430,11 +441,31 @@ namespace Umnik
             this.btnStartFlight.UseVisualStyleBackColor = true;
             this.btnStartFlight.Click += new System.EventHandler(this.StartFlight);
             // 
-            // Map
+            // btnCancelFlight
+            // 
+            this.btnCancelFlight.Location = new System.Drawing.Point(881, 564);
+            this.btnCancelFlight.Name = "btnCancelFlight";
+            this.btnCancelFlight.Size = new System.Drawing.Size(75, 23);
+            this.btnCancelFlight.TabIndex = 33;
+            this.btnCancelFlight.Text = "Отмена";
+            this.btnCancelFlight.UseVisualStyleBackColor = true;
+            // 
+            // btnBackHome
+            // 
+            this.btnBackHome.Location = new System.Drawing.Point(881, 538);
+            this.btnBackHome.Name = "btnBackHome";
+            this.btnBackHome.Size = new System.Drawing.Size(75, 23);
+            this.btnBackHome.TabIndex = 34;
+            this.btnBackHome.Text = "Возврат";
+            this.btnBackHome.UseVisualStyleBackColor = true;
+            // 
+            // MapForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1161, 618);
+            this.Controls.Add(this.btnBackHome);
+            this.Controls.Add(this.btnCancelFlight);
             this.Controls.Add(this.btnStartFlight);
             this.Controls.Add(this.grpMarksMode);
             this.Controls.Add(this.lblMarkDistanceDesc);
@@ -459,8 +490,9 @@ namespace Umnik
             this.Controls.Add(this.gmap);
             this.Controls.Add(this.msMainFunctions);
             this.MainMenuStrip = this.msMainFunctions;
-            this.Name = "Map";
+            this.Name = "MapForm";
             this.Text = "Map";
+            this.Activated += new System.EventHandler(this.MapForm_Activated);
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Map_FormClosing);
             ((System.ComponentModel.ISupportInitialize)(this.trackBarMapZoom)).EndInit();
             this.msMainFunctions.ResumeLayout(false);
@@ -515,6 +547,9 @@ namespace Umnik
         private System.Windows.Forms.GroupBox grpMarksMode;
         private System.Windows.Forms.RadioButton rbMark;
         private System.Windows.Forms.Button btnStartFlight;
+        private System.Windows.Forms.Button btnCancelFlight;
+        private System.Windows.Forms.Button btnBackHome;
+        private System.Windows.Forms.ToolStripMenuItem списокДроновToolStripMenuItem;
     }
 }
 

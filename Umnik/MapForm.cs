@@ -19,7 +19,7 @@ using System.Threading.Tasks;
 
 namespace Umnik
 {
-    public partial class Map : Form
+    public partial class MapForm : Form
     {
         //Класс точка - координаты
         #region
@@ -37,7 +37,7 @@ namespace Umnik
         #endregion
 
         private Bitmap _dronePicture;
-        public Map()
+        public MapForm()
         {
             InitializeComponent();
             StartPosition = FormStartPosition.CenterScreen;
@@ -107,8 +107,8 @@ namespace Umnik
             GMap.NET.GMaps.Instance.Mode = GMap.NET.AccessMode.ServerOnly;
             gmap.Position = new GMap.NET.PointLatLng(43.9151144529437, 42.7288770675659);
 
-            // Создаём новый список маркеров
-            GMapOverlay markersOverlay = new GMapOverlay("markers");
+            // Работаем с визуалкой(создаем Overlay для дронов)
+            gmap.Overlays.Add(DronesOverlay);
 
             // Установка максимального, минимального и текущего значения элемента управления
             trackBarMapZoom.Maximum = 18;
@@ -306,25 +306,25 @@ namespace Umnik
         {
             gmap.Overlays.Clear();
 
-            PositionsClick.Clear();
-            ListOfXML.Clear();
+            //PositionsClick.Clear();
+            //ListOfXML.Clear();
             ListWithPointsFromXML.Clear();
 
             RouteListClick.Clear();
-            RouteClick.Clear();
-            RouteClick.Routes.Clear();
+            //RouteClick.Clear();
+            //RouteClick.Routes.Clear();
 
             PolygonListClick.Clear();
-            PolygonClick.Markers.Clear();
-            PolygonClick.Polygons.Clear();
+            //PolygonClick.Markers.Clear();
+            //PolygonClick.Polygons.Clear();
 
-            BetweenClick.Clear();
+            //DronesOverlay.Clear();
 
-            gmap.Overlays.Remove(ListOfXML); ;
-            gmap.Overlays.Remove(PositionsClick);
-            gmap.Overlays.Remove(RouteClick);
-            gmap.Overlays.Remove(PolygonClick);
-            gmap.Overlays.Remove(BetweenClick);
+            //gmap.Overlays.Remove(ListOfXML); ;
+            //gmap.Overlays.Remove(PositionsClick);
+            //gmap.Overlays.Remove(RouteClick);
+            //gmap.Overlays.Remove(PolygonClick);
+            //gmap.Overlays.Remove(DronesOverlay);
         }
 
         private void trackBar2_Scroll(object sender, EventArgs e)
@@ -338,7 +338,8 @@ namespace Umnik
         GMapOverlay PolygonClick = new GMapOverlay("PolygonClick");
         GMapOverlay RouteClick = new GMapOverlay("RouteClick");
         GMapOverlay PositionsClick = new GMapOverlay("PositionsClick");
-        GMapOverlay BetweenClick = new GMapOverlay("BetweenClick");
+        GMapOverlay DronesOverlay = new GMapOverlay("DronesOverlay");
+        GMapOverlay Overlay = new GMapOverlay("DronesOverlay");
         GMarkerGoogleType Color;
         private void MarkerWithPosition(MouseEventArgs e, GMapOverlay overlayClick, List<CPoint> overlayListClick = null)
         {
@@ -731,17 +732,15 @@ namespace Umnik
                 btnStartFlight.Enabled = true;
                 grpMarksMode.Enabled = true;
             }
-
-            // Работаем с визуалкой
-            gmap.Overlays.Add(BetweenClick);
-
+            GMarkerGoogle lastMarker = new GMarkerGoogle(new PointLatLng(), Color);
             for (int i = 0; i < coords.Count; i++)
             {
+                if (i != 0) DronesOverlay.Markers.Remove(lastMarker);
                 // Добавляем метку на слой
-                GMarkerGoogle MyMarker = new GMarkerGoogle(new PointLatLng(coords[i].lat, coords[i].lng), _dronePicture);
+                GMarkerGoogle myMarker = new GMarkerGoogle(new PointLatLng(coords[i].lat, coords[i].lng), _dronePicture);
+                lastMarker = myMarker;
 
-                BetweenClick.Markers.Clear();
-                BetweenClick.Markers.Add(MyMarker);
+                DronesOverlay.Markers.Add(myMarker);
                 gmap.Refresh();
                 await Task.Delay(1);
             }
@@ -753,6 +752,26 @@ namespace Umnik
         {
             trackBarMapZoom.Value = (int)gmap.Zoom;
             txtZoom.Text = Convert.ToString((int)gmap.Zoom);
+        }
+
+        List<UAV> listOfUAVs = new List<UAV>();
+        private void списокДроновToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            DronesForm dronesForm = new DronesForm(ref listOfUAVs);
+            dronesForm.ShowDialog();
+        }
+
+        private void MapForm_Activated(object sender, EventArgs e)
+        {
+            DronesOverlay.Clear();
+            foreach (UAV item in listOfUAVs)
+            {
+                // Добавляем метку на слой
+                GMarkerGoogle MyMarker = new GMarkerGoogle(new PointLatLng(item.Coordinates.Lat, item.Coordinates.Lng), item.Icon);
+                //DronesOverlay.Markers.Clear();
+                DronesOverlay.Markers.Add(MyMarker);
+            }
+            gmap.Refresh();
         }
     }
 }
