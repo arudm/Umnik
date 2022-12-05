@@ -51,8 +51,9 @@ namespace Umnik
                     }
                 }
                 int numberForColourBitmap = listOfAvailableColours.FirstOrDefault();
-
-                UAV newDrone = new UAV(numberForColourBitmap, new PointLatLng(43.9151144529437, 42.7288770675659));
+                double addLat = 0.1;
+                double addLong = 0.1;
+                UAV newDrone = new UAV(numberForColourBitmap, new PointLatLng(43.9151144529437 + numberForColourBitmap * addLat, 42.7288770675659 + numberForColourBitmap * addLong));
 
                 listOfUAVs.Add(newDrone);
                 checkedListBoxOfDrones.Items.Add(newDrone.Name);
@@ -70,7 +71,6 @@ namespace Umnik
                 listOfUAVs.Remove(uav);
                 checkedListBoxOfDrones.Items.Remove(checkedListBoxOfDrones.CheckedItems[0]);
             }
-
         }
     }
 }

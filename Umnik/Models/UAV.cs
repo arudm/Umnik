@@ -1,6 +1,8 @@
 ﻿using GMap.NET;
+using GMap.NET.WindowsForms.Markers;
 using System;
 using System.Collections.Generic;
+using System.Device.Location;
 using System.Drawing;
 using System.Linq;
 using System.Text;
@@ -53,6 +55,9 @@ namespace Umnik
         public string Path { get; set; }
 
         public DroneColour DroneColor { get; set; }
+        public GeoCoordinate GeoCoordinate { get; set; }
+        public GMarkerGoogleType MarkerGoogleTypeColour { get; set; }
+        public Color SystemColor { get; set; }
 
         public UAV(int number = 0, PointLatLng coordinates = new PointLatLng())
         {
@@ -62,6 +67,48 @@ namespace Umnik
             Path = $@"Icons/uav-mini-{DroneColor.ToString().ToLower()}.png";
             Icon = new Bitmap(Path);
             Coordinates = coordinates;
+            GeoCoordinate = new GeoCoordinate(coordinates.Lat, coordinates.Lng);
+            MarkerGoogleTypeColour = CheckDroneColourForMarkerGoogleType(DroneColor);
+            SystemColor = CheckDroneSystemColour(DroneColor);
+        }
+        private GMarkerGoogleType CheckDroneColourForMarkerGoogleType(DroneColour colour)
+        {
+            switch ((int)colour)
+            {
+                case (int)DroneColour.Black:
+                    return GMarkerGoogleType.black_small;
+                case (int)DroneColour.Red:
+                    return GMarkerGoogleType.red;
+                case (int)DroneColour.Green:
+                    return GMarkerGoogleType.green;
+                case (int)DroneColour.Yellow:
+                    return GMarkerGoogleType.yellow;
+                case (int)DroneColour.Blue:
+                    return GMarkerGoogleType.blue;
+                case (int)DroneColour.Orange:
+                    return GMarkerGoogleType.orange;
+            }
+            return GMarkerGoogleType.white_small;
+        }
+
+        private Color CheckDroneSystemColour(DroneColour colour)
+        {
+            switch ((int)colour)
+            {
+                case (int)DroneColour.Black:
+                    return Color.Black;
+                case (int)DroneColour.Red:
+                    return Color.Red;
+                case (int)DroneColour.Green:
+                    return Color.Green;
+                case (int)DroneColour.Yellow:
+                    return Color.Yellow;
+                case (int)DroneColour.Blue:
+                    return Color.Blue;
+                case (int)DroneColour.Orange:
+                    return Color.Orange;
+            }
+            return Color.White;
         }
     }
 

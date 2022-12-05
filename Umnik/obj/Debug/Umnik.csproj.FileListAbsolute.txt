@@ -302,3 +302,4 @@ E:\Projects\CSProjects\Umnik\Umnik\obj\Debug\Umnik.exe
 E:\Projects\CSProjects\Umnik\Umnik\obj\Debug\Umnik.pdb
 E:\Projects\CSProjects\Umnik\Umnik\obj\Debug\Umnik.DronesForm.resources
 E:\Projects\CSProjects\Umnik\Umnik\obj\Debug\Umnik.MapForm.resources
+E:\Projects\CSProjects\Umnik\Umnik\obj\Debug\Umnik.ConnectionForm.resources

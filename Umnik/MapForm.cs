@@ -110,6 +110,11 @@ namespace Umnik
             // Работаем с визуалкой(создаем Overlay для дронов)
             gmap.Overlays.Add(DronesOverlay);
 
+            // Добавляем оверлей для маркеров
+            gmap.Overlays.Add(PositionsClick); // Для позиций
+            gmap.Overlays.Add(RouteClick); // Для маршрутов
+            gmap.Overlays.Add(PolygonClick); // Для полигонов
+
             // Установка максимального, минимального и текущего значения элемента управления
             trackBarMapZoom.Maximum = 18;
             trackBarMapZoom.Minimum = 2;
@@ -232,11 +237,11 @@ namespace Umnik
             }
         }
 
+        // Метод очистки маркеров из XML
         private void ClearMarksFromMap(object sender, EventArgs e)
         {
             ListOfXML.Clear();
             ListWithPointsFromXML.Clear();
-            gmap.Overlays.Remove(ListOfXML); ;
         }
 
         private void Map_FormClosing(object sender, FormClosingEventArgs e)
@@ -339,7 +344,6 @@ namespace Umnik
         GMapOverlay RouteClick = new GMapOverlay("RouteClick");
         GMapOverlay PositionsClick = new GMapOverlay("PositionsClick");
         GMapOverlay DronesOverlay = new GMapOverlay("DronesOverlay");
-        GMapOverlay Overlay = new GMapOverlay("DronesOverlay");
         GMarkerGoogleType Color;
         private void MarkerWithPosition(MouseEventArgs e, GMapOverlay overlayClick, List<CPoint> overlayListClick = null)
         {
@@ -350,19 +354,23 @@ namespace Umnik
 
             MarkerClick = new GeoCoordinate(y, x);
 
-            //textBox2.Text = x.ToString();
-            //textBox3.Text = y.ToString();
+            // Устанавливаем цвет маркера по умолчанию и при выбронном активном дроне
+            if (numericUpDownDrones.Enabled)
+            {
+                Color = selectedUAV.MarkerGoogleTypeColour;
+            }
+            else Color = GMarkerGoogleType.white_small;
 
             Points.Clear();
 
-            if (rbRoute.Checked)
-                Color = GMarkerGoogleType.red;
+            //if (rbRoute.Checked)
+            //    Color = GMarkerGoogleType.red;
 
-            if (rbPolygon.Checked)
-                Color = GMarkerGoogleType.blue;
+            //if (rbPolygon.Checked)
+            //    Color = GMarkerGoogleType.blue;
 
-            if (rbMark.Checked)
-                Color = GMarkerGoogleType.green;
+            //if (rbMark.Checked)
+            //    Color = GMarkerGoogleType.black_small;
 
             // Добавляем метку на слой
             GMarkerGoogle MyMarker = new GMarkerGoogle(new PointLatLng(y, x), Color);
@@ -384,27 +392,39 @@ namespace Umnik
         {
             MarkerWithPosition(e, overlayClick, overlayListClick);
 
-            if (rbRoute.Checked)
+            // Зааем System.Color для кисти и карандаша
+            Color penAndBrushColor;
+            if (rbRoute.Checked || rbPolygon.Checked)
             {
-                GMapRoute routeClick = new GMapRoute(Points, "routeClick");
-                routeClick.Stroke = new Pen(System.Drawing.Color.Red);
+                if (numericUpDownDrones.Enabled)
+                {
+                    penAndBrushColor = selectedUAV.SystemColor;
+                }
+                else penAndBrushColor = System.Drawing.Color.White;
 
-                if (overlayClick.Routes.Count != 0)
-                    overlayClick.Routes.Clear();
 
-                overlayClick.Routes.Add(routeClick);
-            }
+                if (rbRoute.Checked)
+                {
+                    GMapRoute routeClick = new GMapRoute(Points, "routeClick");
+                    routeClick.Stroke = new Pen(penAndBrushColor);
 
-            if (rbPolygon.Checked)
-            {
-                var polygon = new GMapPolygon(Points, "Click");
-                polygon.Fill = new SolidBrush(System.Drawing.Color.FromArgb(50, System.Drawing.Color.Blue));
-                polygon.Stroke = new Pen(System.Drawing.Color.Blue);
+                    if (overlayClick.Routes.Count != 0)
+                        overlayClick.Routes.Clear();
 
-                if (overlayClick.Polygons.Count != 0)
-                    overlayClick.Polygons.Clear();
+                    overlayClick.Routes.Add(routeClick);
+                }
 
-                overlayClick.Polygons.Add(polygon);
+                if (rbPolygon.Checked)
+                {
+                    GMapPolygon polygon = new GMapPolygon(Points, "Click");
+                    polygon.Fill = new SolidBrush(System.Drawing.Color.FromArgb(50, penAndBrushColor));
+                    polygon.Stroke = new Pen(penAndBrushColor);
+
+                    if (overlayClick.Polygons.Count != 0)
+                        overlayClick.Polygons.Clear();
+
+                    overlayClick.Polygons.Add(polygon);
+                }
             }
         }
         private void gmap_MouseDoubleClick(object sender, MouseEventArgs e)
@@ -414,17 +434,14 @@ namespace Umnik
                 // Добавляем метку на слой
                 if (rbRoute.Checked)
                 {
-                    gmap.Overlays.Add(RouteClick);
                     OverlayMouseDoubleClick(e, RouteClick, RouteListClick);
                 }
                 else if (rbPolygon.Checked)
                 {
-                    gmap.Overlays.Add(PolygonClick);
                     OverlayMouseDoubleClick(e, PolygonClick, PolygonListClick);
                 }
                 else if (rbMark.Checked)
                 {
-                    gmap.Overlays.Add(PositionsClick);
                     OverlayMouseDoubleClick(e, PositionsClick);
                 }
 
@@ -480,7 +497,7 @@ namespace Umnik
             double km = distance / 1000;
 
             txtDistanceInMeters.Text = distance.ToString();
-            DistanceInKm.Text = km.ToString();
+            txtDistanceInKm.Text = km.ToString();
         }
 
         private void DeleteMark(GMapOverlay overlayClick, List<CPoint> overlayListClick)
@@ -518,32 +535,32 @@ namespace Umnik
         {
             if (e.Button == MouseButtons.Left)
             {
+                // Получаем локальные координаты куда нажали
                 double y = gmap.FromLocalToLatLng(e.X, e.Y).Lat;
                 double x = gmap.FromLocalToLatLng(e.X, e.Y).Lng;
-
                 MarkerClick = new GeoCoordinate(y, x);
 
                 markerPlaced = true;
                 if (textBoxesIsNotNull == false)
                 {
                     txtLatY1.Text = item.Position.Lat.ToString();
-                    LngX1.Text = item.Position.Lng.ToString();
+                    txtLngX1.Text = item.Position.Lng.ToString();
                     First = new GeoCoordinate(item.Position.Lat, item.Position.Lng);
                     textBoxesIsNotNull = true;
-                    if (txtLatY2.Text != "" && LngX2.Text != "")
+                    if (txtLatY2.Text != "" && txtLngX2.Text != "")
                     {
                         CalculateDistanceBetweenMarkers(First, Second);
                     }
                 }
                 if (textBoxesIsNotNull == true &&
                     item.Position.Lat.ToString() != txtLatY1.Text &&
-                    item.Position.Lng.ToString() != LngX1.Text)
+                    item.Position.Lng.ToString() != txtLngX1.Text)
                 {
                     txtLatY2.Text = item.Position.Lat.ToString();
-                    LngX2.Text = item.Position.Lng.ToString();
+                    txtLngX2.Text = item.Position.Lng.ToString();
 
-                    Second = new GeoCoordinate(y, x);
-                    if (txtLatY1.Text != "" && LngX1.Text != "")
+                    Second = new GeoCoordinate(item.Position.Lat, item.Position.Lng);
+                    if (txtLatY1.Text != "" && txtLngX1.Text != "")
                     {
                         CalculateDistanceBetweenMarkers(First, Second);
                     }
@@ -553,24 +570,24 @@ namespace Umnik
             if (e.Button == MouseButtons.Middle)
             {
                 if (txtLatY1.Text == item.Position.Lat.ToString() &&
-                    LngX1.Text == item.Position.Lng.ToString())
+                    txtLngX1.Text == item.Position.Lng.ToString())
                 {
                     txtLatY1.Text = "";
-                    LngX1.Text = "";
+                    txtLngX1.Text = "";
 
                     txtDistanceInMeters.Text = "";
-                    DistanceInKm.Text = "";
+                    txtDistanceInKm.Text = "";
 
                     textBoxesIsNotNull = false;
                 }
                 if (txtLatY2.Text == item.Position.Lat.ToString() &&
-                    LngX2.Text == item.Position.Lng.ToString())
+                    txtLngX2.Text == item.Position.Lng.ToString())
                 {
                     txtLatY2.Text = "";
-                    LngX2.Text = "";
+                    txtLngX2.Text = "";
 
                     txtDistanceInMeters.Text = "";
-                    DistanceInKm.Text = "";
+                    txtDistanceInKm.Text = "";
                 }
 
                 // Узнаем слой удаляемого маркера
@@ -633,29 +650,29 @@ namespace Umnik
         private void ClearTextBoxes()
         {
             if (txtLatY1.Text.Length != 0 &&
-                LngX1.Text.Length != 0 &&
+                txtLngX1.Text.Length != 0 &&
                 First.Latitude.ToString() == txtLatY1.Text &&
-                First.Longitude.ToString() == LngX1.Text)
+                First.Longitude.ToString() == txtLngX1.Text)
             {
                 txtLatY1.Text = "";
-                LngX1.Text = "";
+                txtLngX1.Text = "";
 
                 txtDistanceInMeters.Text = "";
-                DistanceInKm.Text = "";
+                txtDistanceInKm.Text = "";
 
                 textBoxesIsNotNull = false;
             }
 
             if (txtLatY2.Text.Length != 0 &&
-                LngX2.Text.Length != 0 &&
+                txtLngX2.Text.Length != 0 &&
                 Second.Latitude.ToString() == txtLatY2.Text &&
-                Second.Longitude.ToString() == LngX2.Text)
+                Second.Longitude.ToString() == txtLngX2.Text)
             {
                 txtLatY2.Text = "";
-                LngX2.Text = "";
+                txtLngX2.Text = "";
 
                 txtDistanceInMeters.Text = "";
-                DistanceInKm.Text = "";
+                txtDistanceInKm.Text = "";
 
                 textBoxesIsNotNull = false;
             }
@@ -667,8 +684,6 @@ namespace Umnik
             RouteClick.Clear();
             RouteClick.Routes.Clear();
 
-            gmap.Overlays.Remove(RouteClick);
-
             ClearTextBoxes();
         }
 
@@ -679,8 +694,6 @@ namespace Umnik
             PolygonClick.Markers.Clear();
             PolygonClick.Polygons.Clear();
 
-            gmap.Overlays.Remove(PolygonClick);
-
             ClearTextBoxes();
         }
 
@@ -688,8 +701,6 @@ namespace Umnik
         private void CleanMarks(object sender, EventArgs e)
         {
             PositionsClick.Clear();
-
-            gmap.Overlays.Remove(PositionsClick);
 
             ClearTextBoxes();
         }
@@ -713,10 +724,10 @@ namespace Umnik
                 // direction of line in degrees
                 //start point
                 lat1 = Convert.ToDouble(txtLatY1.Text);
-                lng1 = Convert.ToDouble(LngX1.Text);
+                lng1 = Convert.ToDouble(txtLngX1.Text);
                 // end point
                 lat2 = Convert.ToDouble(txtLatY2.Text);
-                lng2 = Convert.ToDouble(LngX2.Text);
+                lng2 = Convert.ToDouble(txtLngX2.Text);
 
                 MockLocation start = new MockLocation(lat1, lng1);
                 MockLocation end = new MockLocation(lat2, lng2);
@@ -770,7 +781,43 @@ namespace Umnik
                 GMarkerGoogle MyMarker = new GMarkerGoogle(new PointLatLng(item.Coordinates.Lat, item.Coordinates.Lng), item.Icon);
                 DronesOverlay.Markers.Add(MyMarker);
             }
+
+            //Если появлись дроны включаем кнопку
+            if (listOfUAVs.Count != 0)
+            {
+                numericUpDownDrones.Enabled = true;
+                numericUpDownDrones.Maximum = listOfUAVs.Count - 1;
+            }
+
+            //  Выключаем если дронов в списке не осталось
+            if (listOfUAVs.Count == 0)
+            {
+                numericUpDownDrones.Enabled = false;
+                numericUpDownDrones.Maximum = 0;
+            }
+
             gmap.Refresh();
+
+        }
+
+        private void подключитьсяToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ConnectionForm connectionForm = new ConnectionForm();
+            connectionForm.ShowDialog();
+        }
+
+        UAV selectedUAV = new UAV();
+        private void numericUpDownDrones_ValueChanged(object sender, EventArgs e)
+        {
+            foreach (var uav in listOfUAVs)
+            {
+                if (uav.Name == $"Drone {numericUpDownDrones.Value}")
+                {
+                    selectedUAV = uav;
+                    return;
+                }
+            }
+
         }
     }
 }
