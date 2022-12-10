@@ -1,21 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Text;
-using System.Windows.Forms;
-using System.IO;
+﻿using System.Text;
 using System.Xml;
 
 using GMap.NET;
 using GMap.NET.MapProviders;
+using System.Globalization;
+
+using static Calc.Program;
+using GeoCoordinatePortable;
 using GMap.NET.WindowsForms;
 using GMap.NET.WindowsForms.Markers;
 using GMap.NET.WindowsForms.ToolTips;
-using System.Globalization;
-using System.Device.Location;
-
-using static Calc.Program;
-using System.Threading.Tasks;
 
 namespace Umnik
 {

@@ -89,7 +89,6 @@ namespace Umnik
             this.gmap.EmptyTileColor = System.Drawing.Color.Navy;
             this.gmap.GrayScaleMode = false;
             this.gmap.HelperLineOption = GMap.NET.WindowsForms.HelperLineOptions.DontShow;
-            this.gmap.LevelsKeepInMemmory = 5;
             this.gmap.Location = new System.Drawing.Point(12, 27);
             this.gmap.MarkersEnabled = true;
             this.gmap.MaxZoom = 2;
