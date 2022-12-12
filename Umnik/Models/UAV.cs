@@ -73,19 +73,19 @@ namespace Umnik
         }
         private GMarkerGoogleType CheckDroneColourForMarkerGoogleType(DroneColour colour)
         {
-            switch ((int)colour)
+            switch (colour)
             {
-                case (int)DroneColour.Black:
+                case DroneColour.Black:
                     return GMarkerGoogleType.black_small;
-                case (int)DroneColour.Red:
+                case DroneColour.Red:
                     return GMarkerGoogleType.red;
-                case (int)DroneColour.Green:
+                case DroneColour.Green:
                     return GMarkerGoogleType.green;
-                case (int)DroneColour.Yellow:
+                case DroneColour.Yellow:
                     return GMarkerGoogleType.yellow;
-                case (int)DroneColour.Blue:
+                case DroneColour.Blue:
                     return GMarkerGoogleType.blue;
-                case (int)DroneColour.Orange:
+                case DroneColour.Orange:
                     return GMarkerGoogleType.orange;
             }
             return GMarkerGoogleType.white_small;
@@ -93,19 +93,19 @@ namespace Umnik
 
         private Color CheckDroneSystemColour(DroneColour colour)
         {
-            switch ((int)colour)
+            switch (colour)
             {
-                case (int)DroneColour.Black:
+                case DroneColour.Black:
                     return Color.Black;
-                case (int)DroneColour.Red:
+                case DroneColour.Red:
                     return Color.Red;
-                case (int)DroneColour.Green:
+                case DroneColour.Green:
                     return Color.Green;
-                case (int)DroneColour.Yellow:
+                case DroneColour.Yellow:
                     return Color.Yellow;
-                case (int)DroneColour.Blue:
+                case DroneColour.Blue:
                     return Color.Blue;
-                case (int)DroneColour.Orange:
+                case DroneColour.Orange:
                     return Color.Orange;
             }
             return Color.White;
