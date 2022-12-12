@@ -1,4 +1,5 @@
 ﻿using GMap.NET;
+using GMap.NET.WindowsForms;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -14,10 +15,12 @@ namespace Umnik
     public partial class DronesForm : Form
     {
         internal List<UAV> listOfUAVs = new List<UAV>();
-        internal DronesForm(ref List<UAV> list)
+        internal List<GMapOverlay> listOfOverlaysForRemoving = new List<GMapOverlay>();
+        internal DronesForm(ref List<UAV> list, ref List<GMapOverlay> overlaysForRemoving)
         {
             InitializeComponent();
             listOfUAVs = list;
+            listOfOverlaysForRemoving = overlaysForRemoving;
             foreach (var item in listOfUAVs)
             {
                 checkedListBoxOfDrones.Items.Add(item.Name);
@@ -68,6 +71,9 @@ namespace Umnik
             for (int i = 0; i < listOfCheckedItems; i++)
             {
                 UAV uav = listOfUAVs.FirstOrDefault(x => x.Name == (string)checkedListBoxOfDrones.CheckedItems[0]);
+                listOfOverlaysForRemoving.Add(uav.MarkersOverlay);
+                listOfOverlaysForRemoving.Add(uav.PolygonsOverlay);
+                listOfOverlaysForRemoving.Add(uav.RoutesOverlay);
                 listOfUAVs.Remove(uav);
                 checkedListBoxOfDrones.Items.Remove(checkedListBoxOfDrones.CheckedItems[0]);
             }
