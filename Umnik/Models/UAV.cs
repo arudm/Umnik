@@ -1,5 +1,6 @@
 ﻿using GeoCoordinatePortable;
 using GMap.NET;
+using GMap.NET.WindowsForms;
 using GMap.NET.WindowsForms.Markers;
 using System;
 using System.Collections.Generic;
@@ -9,6 +10,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml.Linq;
+using static Umnik.MapForm;
 
 namespace Umnik
 {
@@ -59,9 +61,16 @@ namespace Umnik
         public GMarkerGoogleType MarkerGoogleTypeColour { get; set; }
         public Color SystemColor { get; set; }
 
-        public UAV(int number = 0, PointLatLng coordinates = new PointLatLng())
+        public GMapOverlay MarkersOverlay { get; set; }
+        public GMapOverlay RoutesOverlay { get; set; }
+        public GMapOverlay PolygonsOverlay { get; set; }
+
+        public List<CPoint> RoutesList { get; set; }
+
+        public List<CPoint> PolygonsList { get; set; }
+
+        public UAV(int colour = 0, PointLatLng coordinates = new PointLatLng())
         {
-            int colour = number;
             Name = colour.ToString();
             DroneColor = (DroneColour)colour;
             Path = $@"Icons/uav-mini-{DroneColor.ToString().ToLower()}.png";
@@ -70,6 +79,11 @@ namespace Umnik
             GeoCoordinate = new GeoCoordinate(coordinates.Lat, coordinates.Lng);
             MarkerGoogleTypeColour = CheckDroneColourForMarkerGoogleType(DroneColor);
             SystemColor = CheckDroneSystemColour(DroneColor);
+            MarkersOverlay = new GMapOverlay(Name);
+            RoutesOverlay = new GMapOverlay(Name);
+            PolygonsOverlay = new GMapOverlay(Name);
+            RoutesList = new List<CPoint>();
+            PolygonsList = new List<CPoint>();
         }
         private GMarkerGoogleType CheckDroneColourForMarkerGoogleType(DroneColour colour)
         {
