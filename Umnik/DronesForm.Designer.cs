@@ -38,7 +38,7 @@
             this.checkedListBoxOfDrones.FormattingEnabled = true;
             this.checkedListBoxOfDrones.Location = new System.Drawing.Point(12, 12);
             this.checkedListBoxOfDrones.Name = "checkedListBoxOfDrones";
-            this.checkedListBoxOfDrones.Size = new System.Drawing.Size(327, 94);
+            this.checkedListBoxOfDrones.Size = new System.Drawing.Size(327, 84);
             this.checkedListBoxOfDrones.TabIndex = 0;
             // 
             // btnAddDrone
@@ -71,6 +71,7 @@
             this.Controls.Add(this.checkedListBoxOfDrones);
             this.Name = "DronesForm";
             this.Text = "Drones";
+            this.Load += new System.EventHandler(this.DronesForm_Load);
             this.ResumeLayout(false);
 
         }

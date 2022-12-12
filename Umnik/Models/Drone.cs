@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using System.Security.Policy;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -24,7 +25,7 @@ namespace Umnik
         Orange,
         MaxDroneColour
     }
-    internal class UAV
+    internal class Drone
     {
         private string name;
         public string Name
@@ -68,14 +69,15 @@ namespace Umnik
         public List<CPoint> RoutesList { get; set; }
 
         public List<CPoint> PolygonsList { get; set; }
-
-        public UAV(int colour = 0, PointLatLng coordinates = new PointLatLng())
+        public GMarkerGoogle DroneMarker { get; set; }
+        public Drone(DroneColour colour = DroneColour.Black, PointLatLng coordinates = new PointLatLng())
         {
-            Name = colour.ToString();
-            DroneColor = (DroneColour)colour;
+            Name = ((int)colour).ToString();
+            DroneColor = colour;
             Path = $@"Icons/uav-mini-{DroneColor.ToString().ToLower()}.png";
             Icon = new Bitmap(Path);
             Coordinates = coordinates;
+            DroneMarker = new GMarkerGoogle(new PointLatLng(Coordinates.Lat, Coordinates.Lng), Icon);
             GeoCoordinate = new GeoCoordinate(coordinates.Lat, coordinates.Lng);
             MarkerGoogleTypeColour = CheckDroneColourForMarkerGoogleType(DroneColor);
             SystemColor = CheckDroneSystemColour(DroneColor);

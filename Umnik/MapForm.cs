@@ -118,6 +118,25 @@ namespace Umnik
 
             trackBarMarkMode.Minimum = 0;
             trackBarMarkMode.Maximum = 360;
+
+            DronesManager.OnAddDroneEvent += OnAddDrone;
+            DronesManager.OnRemoveDroneEvent += OnRemoveDrone;
+        }
+
+        private void OnAddDrone(Drone drone)
+        {
+            DronesOverlay.Markers.Add(drone.DroneMarker);
+            gmap.Overlays.Add(drone.MarkersOverlay);
+            gmap.Overlays.Add(drone.PolygonsOverlay);
+            gmap.Overlays.Add(drone.RoutesOverlay);
+        }
+
+        private void OnRemoveDrone(Drone drone)
+        {
+            DronesOverlay.Markers.Remove(drone.DroneMarker);
+            gmap.Overlays.Remove(drone.MarkersOverlay);
+            gmap.Overlays.Remove(drone.PolygonsOverlay);
+            gmap.Overlays.Remove(drone.RoutesOverlay);
         }
 
         private void ChangeMapZoom(object sender, EventArgs e)
@@ -344,7 +363,7 @@ namespace Umnik
         {
             if (e.Button == MouseButtons.Left)
             {
-                if (selectedUAV == null)
+                if (selectedDrone == null)
                 {
                     // Добавляем метку на слой
                     if (rbRoute.Checked)
@@ -365,15 +384,15 @@ namespace Umnik
                     // Добавляем метку на слой
                     if (rbRoute.Checked)
                     {
-                        OverlayMouseDoubleClick(e, selectedUAV.RoutesOverlay, selectedUAV.RoutesList);
+                        OverlayMouseDoubleClick(e, selectedDrone.RoutesOverlay, selectedDrone.RoutesList);
                     }
                     else if (rbPolygon.Checked)
                     {
-                        OverlayMouseDoubleClick(e, selectedUAV.PolygonsOverlay, selectedUAV.PolygonsList);
+                        OverlayMouseDoubleClick(e, selectedDrone.PolygonsOverlay, selectedDrone.PolygonsList);
                     }
                     else if (rbMark.Checked)
                     {
-                        OverlayMouseDoubleClick(e, selectedUAV.MarkersOverlay);
+                        OverlayMouseDoubleClick(e, selectedDrone.MarkersOverlay);
                     }
                 }
                 // Сохранение наших координат (текстовик, цсв, бд, текстбокс, строки, лист)
@@ -394,7 +413,7 @@ namespace Umnik
             {
                 if (numericUpDownDrones.Enabled)
                 {
-                    penAndBrushColor = selectedUAV.SystemColor;
+                    penAndBrushColor = selectedDrone.SystemColor;
                 }
                 else penAndBrushColor = System.Drawing.Color.White;
 
@@ -435,7 +454,7 @@ namespace Umnik
             // Устанавливаем цвет маркера по умолчанию и при выбронном активном дроне
             if (numericUpDownDrones.Enabled)
             {
-                Color = selectedUAV.MarkerGoogleTypeColour;
+                Color = selectedDrone.MarkerGoogleTypeColour;
             }
             else Color = GMarkerGoogleType.white_small;
 
@@ -771,76 +790,40 @@ namespace Umnik
             txtZoom.Text = Convert.ToString((int)gmap.Zoom);
         }
 
-        List<UAV> listOfUAVs = new List<UAV>();
-        List<GMapOverlay> ListOfOverlaysForRemoving = new List<GMapOverlay>();  
+
         private void списокДроновToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            DronesForm dronesForm = new DronesForm(ref listOfUAVs, ref ListOfOverlaysForRemoving);
+            DronesForm dronesForm = new DronesForm();
             dronesForm.ShowDialog();
         }
 
         private void MapForm_Activated(object sender, EventArgs e)
         {
-            DronesOverlay.Clear();
-
-            // Если список для Оверлеев для удаления не пуст, то удаляем их с gmap и затем очищаем список для повторного использования
-            if (ListOfOverlaysForRemoving.Count != 0)
+            // Если дроны есть то включаем
+            if (DronesManager.Drones.Count > 0)
             {
-                foreach (var overlayForRemove in ListOfOverlaysForRemoving)
-                {
-                    gmap.Overlays.Remove(overlayForRemove);
-                }
-            }
-            ListOfOverlaysForRemoving.Clear();
-
-            //Если появлись дроны включаем кнопку
-            if (listOfUAVs.Count != 0)
-            {
-                foreach (UAV uav in listOfUAVs)
-                {
-
-                    // Добавляем метку дрона на слой
-                    GMarkerGoogle droneMarker = new GMarkerGoogle(new PointLatLng(uav.Coordinates.Lat, uav.Coordinates.Lng), uav.Icon);
-                    DronesOverlay.Markers.Add(droneMarker);
-
-                    if (!gmap.Overlays.Contains(uav.MarkersOverlay))
-                    {
-                        gmap.Overlays.Add(uav.MarkersOverlay);
-                    }
-
-                    if (!gmap.Overlays.Contains(uav.PolygonsOverlay))
-                    {
-                        gmap.Overlays.Add(uav.PolygonsOverlay);
-                    }
-
-                    if (!gmap.Overlays.Contains(uav.RoutesOverlay))
-                    {
-                        gmap.Overlays.Add(uav.RoutesOverlay);
-                    }
-                }
-
                 numericUpDownDrones.Enabled = true;
-                numericUpDownDrones.Maximum = listOfUAVs.Count - 1;
-                foreach (var uav in listOfUAVs)
-                {
-                    if (uav.Name == $"Drone {numericUpDownDrones.Value}")
-                    {
-                        selectedUAV = uav;
-                        return;
-                    }
-                }
+                numericUpDownDrones.Maximum = DronesManager.Drones.Count - 1;
             }
-
             //  Выключаем если дронов в списке не осталось
-            if (listOfUAVs.Count == 0)
+            else if (DronesManager.Drones.Count == 0)
             {
                 numericUpDownDrones.Enabled = false;
                 numericUpDownDrones.Maximum = 0;
             }
 
-            gmap.Refresh();
+            foreach (var drone in DronesManager.Drones)
+            {
+                if (drone.Name == $"Drone {numericUpDownDrones.Value}")
+                {
+                    selectedDrone = drone;
+                    return;
+                }
+            }
 
+            gmap.Refresh();
         }
+
 
         private void подключитьсяToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -848,14 +831,14 @@ namespace Umnik
             connectionForm.ShowDialog();
         }
 
-        UAV selectedUAV = null;
+        Drone selectedDrone = null;
         private void numericUpDownDrones_ValueChanged(object sender, EventArgs e)
         {
-            foreach (var uav in listOfUAVs)
+            foreach (var drone in DronesManager.Drones)
             {
-                if (uav.Name == $"Drone {numericUpDownDrones.Value}")
+                if (drone.Name == $"Drone {numericUpDownDrones.Value}")
                 {
-                    selectedUAV = uav;
+                    selectedDrone = drone;
                     return;
                 }
             }
