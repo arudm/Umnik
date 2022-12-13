@@ -1,4 +1,5 @@
-﻿using System;
+﻿using GMap.NET;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,12 +12,11 @@ namespace Umnik
 
     internal class CPoint
     {
-        public double X { get; set; }
-        public double Y { get; set; }
+        public PointLatLng Point { get; set; }
         public double Ele { get; set; }
         public CPoint() { }
-        public CPoint(double _x, double _y) { X = _x; Y = _y; }
-        public CPoint(double _x, double _y, double _ele) { X = _x; Y = _y; Ele = _ele; }
+        public CPoint(double _y, double _x) { Point = new PointLatLng(_y, _x); }
+        public CPoint(double _y, double _x, double _ele) { Point = new PointLatLng(_y, _x); Ele = _ele; }
 
     }
     #endregion

@@ -10,6 +10,7 @@ using GeoCoordinatePortable;
 using GMap.NET.WindowsForms;
 using GMap.NET.WindowsForms.Markers;
 using GMap.NET.WindowsForms.ToolTips;
+using System.Drawing;
 
 namespace Umnik
 {
@@ -86,13 +87,13 @@ namespace Umnik
             gmap.Position = new GMap.NET.PointLatLng(43.9151144529437, 42.7288770675659);
 
             // Работаем с визуалкой(создаем Overlay для дронов)
-            gmap.Overlays.Add(DronesOverlay);
+            gmap.Overlays.Add(dronesOverlay);
 
             // Добавляем оверлей для маркеров
-            gmap.Overlays.Add(PositionsClick); // Для позиций
-            gmap.Overlays.Add(RouteClick); // Для маршрутов
-            gmap.Overlays.Add(PolygonClick); // Для полигонов
-
+            gmap.Overlays.Add(markersOverlay); // Для позиций
+            gmap.Overlays.Add(routesOverlay); // Для маршрутов
+            gmap.Overlays.Add(polygonOverlay); // Для полигонов
+            gmap.Overlays.Add(overlayOfXML); // Для XML(GPX) координат
             // Установка максимального, минимального и текущего значения элемента управления
             trackBarMapZoom.Maximum = 18;
             trackBarMapZoom.Minimum = 2;
@@ -109,7 +110,7 @@ namespace Umnik
 
         private void OnAddDrone(Drone drone)
         {
-            DronesOverlay.Markers.Add(drone.DroneMarker);
+            dronesOverlay.Markers.Add(drone.DroneMarker);
             gmap.Overlays.Add(drone.MarkersOverlay);
             gmap.Overlays.Add(drone.PolygonsOverlay);
             gmap.Overlays.Add(drone.RoutesOverlay);
@@ -117,7 +118,7 @@ namespace Umnik
 
         private void OnRemoveDrone(Drone drone)
         {
-            DronesOverlay.Markers.Remove(drone.DroneMarker);
+            dronesOverlay.Markers.Remove(drone.DroneMarker);
             gmap.Overlays.Remove(drone.MarkersOverlay);
             gmap.Overlays.Remove(drone.PolygonsOverlay);
             gmap.Overlays.Remove(drone.RoutesOverlay);
@@ -187,12 +188,10 @@ namespace Umnik
 
         GMapRoute routesOfXML = new GMapRoute("XML");
         GMapOverlay overlayOfXML = new GMapOverlay();
-        List<CPoint> ListWithCPointsFromXML = new List<CPoint>();
-        List<PointLatLng> ListWithPointLatLngXML = new List<PointLatLng>();
+        List<CPoint> listWithCPointsFromXML = new List<CPoint>();
+        List<PointLatLng> listWithPointLatLngXML = new List<PointLatLng>();
         private void ShowMarksOnMap(object sender, EventArgs e)
         {
-            gmap.Overlays.Add(overlayOfXML);
-
             // Создали документ
             XmlDocument xml = new XmlDocument();
             // Открыли его по пути
@@ -205,10 +204,9 @@ namespace Umnik
             // Элементы ХМЛ-документа
             foreach (XmlElement xnode in nl)
             {
-                CPoint cPoint = new CPoint();
-                cPoint.X = GetDouble(xnode.GetAttribute("lat"), 0);
-                cPoint.Y = GetDouble(xnode.GetAttribute("lon"), 0);
-                PointLatLng pointLatLng = new PointLatLng(cPoint.X, cPoint.Y);
+                var y = GetDouble(xnode.GetAttribute("lat"), 0);
+                var x = GetDouble(xnode.GetAttribute("lon"), 0);
+                CPoint cPoint = new CPoint(y, x);
 
                 // У каждого узла смотрим его поля
                 foreach (XmlNode childnode in xnode.ChildNodes)
@@ -217,10 +215,10 @@ namespace Umnik
                         cPoint.Ele = GetDouble(childnode.InnerText, 0);
                 }
 
-                ListWithCPointsFromXML.Add(cPoint);
-                ListWithPointLatLngXML.Add(pointLatLng);
+                listWithCPointsFromXML.Add(cPoint);
+                listWithPointLatLngXML.Add(cPoint.Point);
             }
-            routesOfXML = new GMapRoute(ListWithPointLatLngXML, "XMLKislovodskRoute");
+            routesOfXML = new GMapRoute(listWithPointLatLngXML, "XMLKislovodskRoute");
             overlayOfXML.Routes.Add(routesOfXML);
         }
 
@@ -228,8 +226,8 @@ namespace Umnik
         private void ClearMarksFromMap(object sender, EventArgs e)
         {
             overlayOfXML.Clear();
-            ListWithCPointsFromXML.Clear();
-            ListWithPointLatLngXML.Clear();
+            listWithCPointsFromXML.Clear();
+            listWithPointLatLngXML.Clear();
         }
 
         private void Map_FormClosing(object sender, FormClosingEventArgs e)
@@ -254,7 +252,7 @@ namespace Umnik
 
                     Image image = gmap.ToImage();
 
-                    if (image != null)
+                    if (image is not null)
                     {
                         using (image)
                         {
@@ -293,76 +291,82 @@ namespace Umnik
         {
             gmap.Overlays.Clear();
 
-            //PositionsClick.Clear();
+            //markersOverlay.Clear();
             //ListOfXML.Clear();
-            ListWithCPointsFromXML.Clear();
+            listWithCPointsFromXML.Clear();
 
-            RouteListClick.Clear();
-            //RouteClick.Clear();
-            //RouteClick.Routes.Clear();
+            routeOverlayListClick.Clear();
+            //routesOverlay.Clear();
+            //routesOverlay.Routes.Clear();
 
-            PolygonListClick.Clear();
-            //PolygonClick.Markers.Clear();
-            //PolygonClick.Polygons.Clear();
+            polygonOverlayListClick.Clear();
+            //polygonOverlay.Markers.Clear();
+            //polygonOverlay.Polygons.Clear();
 
-            //DronesOverlay.Clear();
+            //dronesOverlay.Clear();
 
             //gmap.Overlays.Remove(ListOfXML); ;
-            //gmap.Overlays.Remove(PositionsClick);
-            //gmap.Overlays.Remove(RouteClick);
-            //gmap.Overlays.Remove(PolygonClick);
-            //gmap.Overlays.Remove(DronesOverlay);
+            //gmap.Overlays.Remove(markersOverlay);
+            //gmap.Overlays.Remove(routesOverlay);
+            //gmap.Overlays.Remove(polygonOverlay);
+            //gmap.Overlays.Remove(dronesOverlay);
         }
 
         private void trackBar2_Scroll(object sender, EventArgs e)
         {
             gmap.Bearing = trackBarMarkMode.Value;
         }
-
-        List<CPoint> RouteListClick = new List<CPoint>();
-        List<CPoint> PolygonListClick = new List<CPoint>();
-        List<PointLatLng> Points = new List<PointLatLng>();
-        GMapOverlay PolygonClick = new GMapOverlay("PolygonClick");
-        GMapOverlay RouteClick = new GMapOverlay("RouteClick");
-        GMapOverlay PositionsClick = new GMapOverlay("PositionsClick");
-        GMapOverlay DronesOverlay = new GMapOverlay("DronesOverlay");
-        GMarkerGoogleType Color;
+        List<CPoint> markerOverlayListClick = new List<CPoint>();
+        List<CPoint> routeOverlayListClick = new List<CPoint>();
+        List<CPoint> polygonOverlayListClick = new List<CPoint>();
+        List<PointLatLng> markerPoints = new List<PointLatLng>();
+        List<PointLatLng> routePoints = new List<PointLatLng>();
+        List<PointLatLng> polygonPoints = new List<PointLatLng>();
+        GMapOverlay polygonOverlay = new GMapOverlay("polygonOverlay");
+        GMapOverlay routesOverlay = new GMapOverlay("routesOverlay");
+        GMapOverlay markersOverlay = new GMapOverlay("markersOverlay");
+        GMapOverlay dronesOverlay = new GMapOverlay("dronesOverlay");
+        GMarkerGoogleType сolor;
         private void gmap_MouseDoubleClick(object sender, MouseEventArgs e)
         {
             if (e.Button == MouseButtons.Left)
             {
-                if (selectedDrone == null)
+                // Добавляем метку на слой
+                if (rbRoute.Checked)
                 {
-                    // Добавляем метку на слой
-                    if (rbRoute.Checked)
+                    if (selectedDrone?.RoutesOverlay is not null)
                     {
-                        OverlayMouseDoubleClick(e, RouteClick, RouteListClick);
+                        OverlayMouseDoubleClick(e, selectedDrone?.RoutesOverlay!, selectedDrone?.RoutesList!, selectedDrone?.RoutesPointList!);
                     }
-                    else if (rbPolygon.Checked)
+                    else
                     {
-                        OverlayMouseDoubleClick(e, PolygonClick, PolygonListClick);
+                        OverlayMouseDoubleClick(e, routesOverlay, routeOverlayListClick, routePoints);
                     }
-                    else if (rbMark.Checked)
+
+                }
+                else if (rbPolygon.Checked)
+                {
+                    if (selectedDrone?.PolygonsOverlay is not null)
                     {
-                        OverlayMouseDoubleClick(e, PositionsClick);
+                        OverlayMouseDoubleClick(e, selectedDrone?.PolygonsOverlay!, selectedDrone?.PolygonsList!, selectedDrone?.PolygonsPointList!);
+                    }
+                    else
+                    {
+                        OverlayMouseDoubleClick(e, polygonOverlay, polygonOverlayListClick, polygonPoints);
                     }
                 }
-                else
+                else if (rbMark.Checked)
                 {
-                    // Добавляем метку на слой
-                    if (rbRoute.Checked)
+                    if (selectedDrone?.MarkersOverlay is not null)
                     {
-                        OverlayMouseDoubleClick(e, selectedDrone.RoutesOverlay, selectedDrone.RoutesList);
+                        OverlayMouseDoubleClick(e, selectedDrone?.MarkersOverlay!, selectedDrone?.MarkersList!, selectedDrone?.MarkersPointList!);
                     }
-                    else if (rbPolygon.Checked)
+                    else
                     {
-                        OverlayMouseDoubleClick(e, selectedDrone.PolygonsOverlay, selectedDrone.PolygonsList);
-                    }
-                    else if (rbMark.Checked)
-                    {
-                        OverlayMouseDoubleClick(e, selectedDrone.MarkersOverlay);
+                        OverlayMouseDoubleClick(e, markersOverlay, markerOverlayListClick, markerPoints);
                     }
                 }
+
                 // Сохранение наших координат (текстовик, цсв, бд, текстбокс, строки, лист)
                 //FileStream fileStream = new FileStream(@"Date\Координаты_ВыбранныеПользователем.txt", FileMode.Append, FileAccess.Write);
                 //StreamWriter streamWriter = new StreamWriter(fileStream, Encoding.GetEncoding(1251));
@@ -371,25 +375,19 @@ namespace Umnik
             }
         }
 
-        private void OverlayMouseDoubleClick(MouseEventArgs e, GMapOverlay overlayClick, List<CPoint> overlayListClick = null)
+        private void OverlayMouseDoubleClick(MouseEventArgs e, GMapOverlay overlayClick, List<CPoint> overlayListClick, List<PointLatLng> pointList)
         {
-            MarkerWithPosition(e, overlayClick, overlayListClick);
+            MarkerWithPosition(e, overlayClick, overlayListClick, pointList);
 
-            // Зааем System.Color для кисти и карандаша
-            Color penAndBrushColor;
             if (rbRoute.Checked || rbPolygon.Checked)
             {
-                if (numericUpDownDrones.Enabled)
-                {
-                    penAndBrushColor = selectedDrone.SystemColor;
-                }
-                else penAndBrushColor = System.Drawing.Color.White;
-
+                // Получаем System.сolor для кисти и карандаша
+                Color colorPenAndBrush = GetPenAndBrushColor();
 
                 if (rbRoute.Checked)
                 {
-                    GMapRoute routeClick = new GMapRoute(Points, "routesClick");
-                    routeClick.Stroke = new Pen(penAndBrushColor);
+                    GMapRoute routeClick = new GMapRoute(pointList, "routesClick");
+                    routeClick.Stroke = new Pen(colorPenAndBrush);
 
                     if (overlayClick.Routes.Count != 0)
                         overlayClick.Routes.Clear();
@@ -399,9 +397,9 @@ namespace Umnik
 
                 if (rbPolygon.Checked)
                 {
-                    GMapPolygon polygon = new GMapPolygon(Points, "polygonClick");
-                    polygon.Fill = new SolidBrush(System.Drawing.Color.FromArgb(50, penAndBrushColor));
-                    polygon.Stroke = new Pen(penAndBrushColor);
+                    GMapPolygon polygon = new GMapPolygon(pointList, "polygonClick");
+                    polygon.Fill = new SolidBrush(System.Drawing.Color.FromArgb(50, colorPenAndBrush));
+                    polygon.Stroke = new Pen(colorPenAndBrush);
 
                     if (overlayClick.Polygons.Count != 0)
                         overlayClick.Polygons.Clear();
@@ -410,7 +408,15 @@ namespace Umnik
                 }
             }
         }
-        private void MarkerWithPosition(MouseEventArgs e, GMapOverlay overlayClick, List<CPoint> overlayListClick = null)
+        private Color GetPenAndBrushColor()
+        {
+            if (numericUpDownDrones.Enabled)
+            {
+                return selectedDrone.SystemColor;
+            }
+            else return System.Drawing.Color.White;
+        }
+        private void MarkerWithPosition(MouseEventArgs e, GMapOverlay overlayClick, List<CPoint> overlayListClick, List<PointLatLng> pointList)
         {
             // Долгота - longitude - lng - с запада на восток
             double x = gmap.FromLocalToLatLng(e.X, e.Y).Lng;
@@ -419,17 +425,10 @@ namespace Umnik
 
             MarkerClick = new GeoCoordinate(y, x);
 
-            // Устанавливаем цвет маркера по умолчанию и при выбронном активном дроне
-            if (numericUpDownDrones.Enabled)
-            {
-                Color = selectedDrone.MarkerGoogleTypeColour;
-            }
-            else Color = GMarkerGoogleType.white_small;
-
-            Points.Clear();
-
-            // Добавляем метку на слой
-            GMarkerGoogle MyMarker = new GMarkerGoogle(new PointLatLng(y, x), Color);
+            //pointList.Clear();
+            var newPoint = new PointLatLng(y, x);
+            // Устанавливаем цвет при выбранном активном дроне / цвет маркера по умолчанию
+            GMarkerGoogle MyMarker = new GMarkerGoogle(newPoint, selectedDrone?.MarkerGoogleTypeColour ?? GMarkerGoogleType.white_small);
             MyMarker.ToolTip = new GMapRoundedToolTip(MyMarker);
             MyMarker.ToolTipText = string.Format("Coordinate: \n Lng: {0} \n Lat: {1}", gmap.FromLocalToLatLng(e.X, e.Y).Lng, gmap.FromLocalToLatLng(e.X, e.Y).Lat);
             overlayClick.Markers.Add(MyMarker);
@@ -438,8 +437,9 @@ namespace Umnik
             {
                 overlayListClick.Add(new CPoint(y, x));
 
-                for (int i = 0; i < overlayListClick.Count; i++)
-                    Points.Add(new PointLatLng(overlayListClick[i].X, overlayListClick[i].Y));
+                //for (int i = 0; i < overlayListClick.Count; i++)
+                //    pointList.Add(overlayListClick[i].Point);
+                pointList.Add(newPoint);
             }
 
             markerPlaced = true;
@@ -493,37 +493,6 @@ namespace Umnik
             txtDistanceInKm.Text = km.ToString();
         }
 
-        private void DeleteMark(GMapOverlay overlayClick, List<CPoint> overlayListClick)
-        {
-            for (int i = 0; i < overlayListClick.Count; i++)
-                Points.Add(new PointLatLng(overlayListClick[i].X, overlayListClick[i].Y));
-
-            if (overlayClick == RouteClick)
-            {
-                //Points.Clear();
-                GMapRoute routeClick = new GMapRoute(Points, "routeClick");
-                routeClick.Stroke = new Pen(System.Drawing.Color.Red);
-
-                if (overlayClick.Routes.Count != 0)
-                    overlayClick.Routes.Clear();
-
-                overlayClick.Routes.Add(routeClick);
-                Points.Clear();
-            }
-            if (overlayClick == PolygonClick)
-            {
-                //Points.Clear();
-                var polygon = new GMapPolygon(Points, "Click");
-                polygon.Fill = new SolidBrush(System.Drawing.Color.FromArgb(50, System.Drawing.Color.Blue));
-                polygon.Stroke = new Pen(System.Drawing.Color.Blue);
-
-                if (overlayClick.Polygons.Count != 0)
-                    overlayClick.Polygons.Clear();
-
-                overlayClick.Polygons.Add(polygon);
-                Points.Clear();
-            }
-        }
         private void gmap_OnMarkerClick(GMapMarker item, MouseEventArgs e)
         {
             if (e.Button == MouseButtons.Left)
@@ -584,60 +553,95 @@ namespace Umnik
                 }
 
                 // Узнаем слой удаляемого маркера
-                GMapOverlay overlay = item.Overlay;
-                for (int i = 0; i < overlay.Markers.Count; i++)
+                GMapOverlay? currentOverlay = item.Overlay;
+              
+                for (int i = 0; i < currentOverlay.Markers.Count; i++)
                 {
-                    if (overlay.Markers[i].Equals(item))
+                    if (currentOverlay.Markers[i].Equals(item))
                     {
-                        markerPlaced = false;
-                    }
-                }
-                if (overlay == RouteClick && overlay.Markers.Count == 0)
-                {
-                    RouteListClick.Clear();
-                    RouteClick.Clear();
-                    RouteClick.Routes.Clear();
-                }
-                else if (overlay == RouteClick && overlay.Markers.Count != 0)
-                {
-                    for (int i = 0; i < RouteListClick.Count; i++)
-                    {
-                        if (RouteClick.Markers[i].Equals(item))
-                        {
-                            RouteListClick.RemoveAt(i);
-                            RouteClick.Markers.RemoveAt(i);
-                            RouteClick.Routes.Clear();
-                            Points.Clear();
-
-                            DeleteMark(RouteClick, RouteListClick);
-                        }
+                        markerPlaced = false; // Для текстбоксов
                     }
                 }
 
-                if (overlay == PolygonClick && overlay.Markers.Count == 0)
+                // Для удлаения метки принадлежащей дрону
+                Drone? drone = null;
+                foreach (var uav in DronesManager.Drones)
                 {
-                    PolygonListClick.Clear();
-                    PolygonClick.Clear();
-                    PolygonClick.Polygons.Clear();
-                }
-                else if (overlay == PolygonClick && overlay.Markers.Count != 0)
-                {
-                    for (int i = 0; i < PolygonListClick.Count; i++)
+                    if (uav.Name == currentOverlay.Id)
                     {
-                        if (PolygonClick.Markers[i].Equals(item))
-                        {
-                            PolygonListClick.RemoveAt(i);
-                            PolygonClick.Markers.RemoveAt(i);
-                            PolygonClick.Polygons.Clear();
-                            Points.Clear();
-
-                            DeleteMark(PolygonClick, PolygonListClick);
-                        }
+                        drone = uav;
                     }
                 }
-                // Удаляем в этом слое этот маркер
-                overlay.Markers.Remove(item);
+                if (drone is not null)
+                {
+                    drone?.RemoveMarkerFromOverlay(item, currentOverlay);
+                    return;
+                }
+
+                // Удаление обычных белых меток, без выбранных дронов
+                if (currentOverlay == markersOverlay)
+                {
+                    DeleteMarkFromLists(item, currentOverlay, markerOverlayListClick, markerPoints);
+                }
+                else if (currentOverlay == routesOverlay)
+                {
+                    DeleteMarkFromLists(item, currentOverlay, routeOverlayListClick, routePoints);
+                    currentOverlay.Routes.Clear();
+                    AddRoutesMark(currentOverlay, routePoints);
+                }
+                else if (currentOverlay == polygonOverlay)
+                {
+                    DeleteMarkFromLists(item, currentOverlay, polygonOverlayListClick, polygonPoints);
+                    currentOverlay.Polygons.Clear();
+                    AddPolygonsMark(currentOverlay, polygonPoints);
+                }
+
+                // Удаляем в этом слое маркер
+                currentOverlay.Markers.Remove(item);
             }
+        }
+
+        private void DeleteMarkFromLists(GMapMarker marker, GMapOverlay overlay, List<CPoint> overlayListClick, List<PointLatLng> points)
+        {
+            for (int i = 0; i < overlayListClick.Count; i++)
+            {
+                if (overlay.Markers[i].Equals(marker))
+                {
+                    overlayListClick.RemoveAt(i);
+                }
+            }
+            for (int j = 0; j < points.Count; j++)
+            {
+                if (points[j] == marker.Position)
+                {
+                    PointLatLng currentPoint = points[j];
+                    points.Remove(currentPoint);
+                }
+            }
+        }
+
+        private void AddRoutesMark(GMapOverlay overlayClick, List<PointLatLng> points)
+        {
+            // Получаем System.сolor для кисти и карандаша
+            GMapRoute routeClick = new GMapRoute(points, "routeClick");
+            routeClick.Stroke = new Pen(System.Drawing.Color.White);
+
+            if (overlayClick.Routes.Count != 0)
+                overlayClick.Routes.Clear();
+
+            overlayClick.Routes.Add(routeClick);
+        }
+
+        private void AddPolygonsMark(GMapOverlay overlayClick, List<PointLatLng> points)
+        {
+            var polygon = new GMapPolygon(points, "polygonClick");
+            polygon.Fill = new SolidBrush(System.Drawing.Color.FromArgb(50, System.Drawing.Color.White));
+            polygon.Stroke = new Pen(System.Drawing.Color.White);
+
+            if (overlayClick.Polygons.Count != 0)
+                overlayClick.Polygons.Clear();
+
+            overlayClick.Polygons.Add(polygon);
         }
 
         // Очищаем текстбоксы
@@ -675,9 +679,9 @@ namespace Umnik
         // Очистка слоя маршрутов
         private void CleanRouteLayer(object sender, EventArgs e)
         {
-            RouteListClick.Clear();
-            RouteClick.Clear();
-            RouteClick.Routes.Clear();
+            routeOverlayListClick.Clear();
+            routesOverlay.Clear();
+            routesOverlay.Routes.Clear();
 
             ClearTextBoxes();
         }
@@ -685,9 +689,9 @@ namespace Umnik
         // Очистка слоя полигонов
         private void CleanPolygonLayer(object sender, EventArgs e)
         {
-            PolygonListClick.Clear();
-            PolygonClick.Markers.Clear();
-            PolygonClick.Polygons.Clear();
+            polygonOverlayListClick.Clear();
+            polygonOverlay.Markers.Clear();
+            polygonOverlay.Polygons.Clear();
 
             ClearTextBoxes();
         }
@@ -695,7 +699,7 @@ namespace Umnik
         // Очистка меток 
         private void CleanMarks(object sender, EventArgs e)
         {
-            PositionsClick.Clear();
+            markersOverlay.Clear();
 
             ClearTextBoxes();
         }
@@ -738,15 +742,15 @@ namespace Umnik
                 btnStartFlight.Enabled = true;
                 grpMarksMode.Enabled = true;
             }
-            GMarkerGoogle lastMarker = new GMarkerGoogle(new PointLatLng(), Color);
+            GMarkerGoogle lastMarker = new GMarkerGoogle(new PointLatLng(), сolor);
             for (int i = 0; i < coords.Count; i++)
             {
-                if (i != 0) DronesOverlay.Markers.Remove(lastMarker);
+                if (i != 0) dronesOverlay.Markers.Remove(lastMarker);
                 // Добавляем метку на слой
                 GMarkerGoogle myMarker = new GMarkerGoogle(new PointLatLng(coords[i].lat, coords[i].lng), _dronePicture);
                 lastMarker = myMarker;
 
-                DronesOverlay.Markers.Add(myMarker);
+                dronesOverlay.Markers.Add(myMarker);
                 gmap.Refresh();
                 await Task.Delay(1);
             }
@@ -780,6 +784,7 @@ namespace Umnik
             {
                 numericUpDownDrones.Enabled = false;
                 numericUpDownDrones.Maximum = 0;
+
             }
 
             foreach (var drone in DronesManager.Drones)

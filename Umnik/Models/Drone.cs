@@ -66,9 +66,14 @@ namespace Umnik
         public GMapOverlay RoutesOverlay { get; set; }
         public GMapOverlay PolygonsOverlay { get; set; }
 
+        public List<CPoint> MarkersList { get; set; }
         public List<CPoint> RoutesList { get; set; }
-
         public List<CPoint> PolygonsList { get; set; }
+
+        public List<PointLatLng> MarkersPointList { get; set; }
+        public List<PointLatLng> RoutesPointList { get; set; }
+        public List<PointLatLng> PolygonsPointList { get; set; }
+
         public GMarkerGoogle DroneMarker { get; set; }
         public Drone(DroneColour colour = DroneColour.Black, PointLatLng coordinates = new PointLatLng())
         {
@@ -84,9 +89,90 @@ namespace Umnik
             MarkersOverlay = new GMapOverlay(Name);
             RoutesOverlay = new GMapOverlay(Name);
             PolygonsOverlay = new GMapOverlay(Name);
+            MarkersList = new List<CPoint>();
             RoutesList = new List<CPoint>();
             PolygonsList = new List<CPoint>();
+            MarkersPointList = new List<PointLatLng>();
+            RoutesPointList = new List<PointLatLng>();
+            PolygonsPointList = new List<PointLatLng>();
         }
+
+        //public delegate void OnRemoveMarkerFromOverlayEventHandler(GMapMarker marker, GMapOverlay overlay);
+        //public static event OnRemoveMarkerFromOverlayEventHandler? OnRemoveMarkerFromOverlayEvent;
+
+        public void RemoveMarkerFromOverlay(GMapMarker marker, GMapOverlay overlay)
+        {
+            //OnRemoveMarkerFromOverlayEvent?.Invoke(marker, overlay);
+            if (overlay == MarkersOverlay)
+            {
+                var currentMarkersOverlayListClick = MarkersList;
+                var currentMarkersPointsList = MarkersPointList;
+                DeleteMarkFromLists(marker, overlay, currentMarkersOverlayListClick!, currentMarkersPointsList!);
+                //overlay.Clear();
+            }
+            else if (overlay == RoutesOverlay)
+            {
+                var currentRoutesOverlayListClick = RoutesList;
+                var currentRoutesPointsList = RoutesPointList;
+                DeleteMarkFromLists(marker, overlay, currentRoutesOverlayListClick!, currentRoutesPointsList!);
+                overlay.Routes.Clear();
+                AddRoutesMark(overlay, currentRoutesPointsList);
+            }
+            else if (overlay == PolygonsOverlay)
+            {
+                var currentPolygonsOverlayListClick = PolygonsList;
+                var currentPolygonPointsList = PolygonsPointList;
+                DeleteMarkFromLists(marker, overlay, currentPolygonsOverlayListClick!, currentPolygonPointsList!);
+                overlay.Polygons.Clear();
+                AddPolygonsMark(overlay, currentPolygonPointsList);
+            }
+
+            // Удаляем в этом слое маркер
+            overlay.Markers.Remove(marker);
+        }
+        private void DeleteMarkFromLists(GMapMarker marker, GMapOverlay overlay, List<CPoint> overlayListClick, List<PointLatLng> points)
+        {
+            for (int i = 0; i < overlayListClick.Count; i++)
+            {
+                if (overlay.Markers[i].Equals(marker))
+                {
+                    overlayListClick.RemoveAt(i);
+                }
+            }
+            for (int j = 0; j < points.Count; j++)
+            {
+                if (points[j] == marker.Position)
+                {
+                    PointLatLng currentPoint = points[j];
+                    points.Remove(currentPoint);
+                }
+            }
+        }
+
+        private void AddRoutesMark(GMapOverlay overlayClick, List<PointLatLng> points)
+        {
+            // Получаем System.сolor для кисти и карандаша
+            GMapRoute routeClick = new GMapRoute(points, "routeClick");
+            routeClick.Stroke = new Pen(SystemColor);
+
+            if (overlayClick.Routes.Count != 0)
+                overlayClick.Routes.Clear();
+
+            overlayClick.Routes.Add(routeClick);
+        }
+
+        private void AddPolygonsMark(GMapOverlay overlayClick, List<PointLatLng> points)
+        {
+            var polygon = new GMapPolygon(points, "polygonClick");
+            polygon.Fill = new SolidBrush(System.Drawing.Color.FromArgb(50, SystemColor));
+            polygon.Stroke = new Pen(SystemColor);
+
+            if (overlayClick.Polygons.Count != 0)
+                overlayClick.Polygons.Clear();
+
+            overlayClick.Polygons.Add(polygon);
+        }
+
         private GMarkerGoogleType CheckDroneColourForMarkerGoogleType(DroneColour colour)
         {
             switch (colour)
