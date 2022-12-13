@@ -30,13 +30,18 @@ namespace Umnik
 
         public static void AddDrone()
         {
-            DroneColour colourForBitmap = _availableColours.FirstOrDefault();
-            double addLat = 0.1;
-            double addLong = 0.1;
-            Drone drone = new Drone(colourForBitmap, new PointLatLng(43.9151144529437 + (int)colourForBitmap * addLat, 42.7288770675659 + (int)colourForBitmap * addLong));
-            _availableColours.Remove(drone.DroneColor);
-            OnAddDroneEvent?.Invoke(drone);
-            _drones.Add(drone);
+            if (_availableColours.Count is not 0)
+            {
+                DroneColour colourForBitmap = _availableColours.First();
+                double addLat = 0.1;
+                double addLong = 0.1;
+                Drone drone = new Drone(colourForBitmap, 
+                    new PointLatLng(43.9151144529437 + (int)colourForBitmap * addLat,
+                    42.7288770675659 + (int)colourForBitmap * addLong));
+                _availableColours.Remove(drone.DroneColor);
+                OnAddDroneEvent?.Invoke(drone);
+                _drones.Add(drone);
+            }
         }
 
         static List<DroneColour> GetListOfAvailableColours()

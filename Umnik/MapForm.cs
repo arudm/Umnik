@@ -15,20 +15,6 @@ namespace Umnik
 {
     public partial class MapForm : Form
     {
-        //Класс точка - координаты
-        #region
-
-        public class CPoint
-        {
-            public double X { get; set; }
-            public double Y { get; set; }
-            public double Ele { get; set; }
-            public CPoint() { }
-            public CPoint(double _x, double _y) { X = _x; Y = _y; }
-            public CPoint(double _x, double _y, double _ele) { X = _x; Y = _y; Ele = _ele; }
-
-        }
-        #endregion
 
         private Bitmap _dronePicture;
         public MapForm()
@@ -43,29 +29,27 @@ namespace Umnik
             _dronePicture = new Bitmap(@"Icons/uav-mini-black.png");
 
             // Создание элементов меню
-            ToolStripMenuItem YandexMenuItem = new ToolStripMenuItem("Установить Яндекс-карту");
-            ToolStripMenuItem GoogleMenuItem = new ToolStripMenuItem("Установить Google-карту");
+            ToolStripMenuItem googleMenuItem = new ToolStripMenuItem("Установить Google-карту");
             ToolStripMenuItem saveMenuItem = new ToolStripMenuItem("Сохранить карту");
-            ToolStripMenuItem OpenCycleMapMenuItem = new ToolStripMenuItem("Установить OpenCycleMap-карту");
+            ToolStripMenuItem openCycleMapMenuItem = new ToolStripMenuItem("Установить OpenCycleMap-карту");
 
-            ToolStripMenuItem ClearMap = new ToolStripMenuItem("Очистить карту");
+            ToolStripMenuItem clearMap = new ToolStripMenuItem("Очистить карту");
 
             // Добавление элементов в меню
-            contextMenuStrip1.Items.AddRange(new[] { saveMenuItem, YandexMenuItem, GoogleMenuItem, OpenCycleMapMenuItem, ClearMap });
+            contextMenuStrip1.Items.AddRange(new[] { saveMenuItem, googleMenuItem, openCycleMapMenuItem, clearMap });
 
             // Ассоциирование контекстного меню
             gmap.ContextMenuStrip = contextMenuStrip1;
 
             // Установка обработки событий
-            saveMenuItem.Click += SaveCurrentMapBitmap;
-            YandexMenuItem.Click += YandexMenuItem_Click;
-            GoogleMenuItem.Click += GoogleMenuItem_Click;
-            OpenCycleMapMenuItem.Click += OpenCycleMapMenuItem_Click;
-            ClearMap.Click += ClearMap_Click;
+            saveMenuItem.Click += SaveCurrentMapBitmap!;
+            googleMenuItem.Click += GoogleMenuItem_Click!;
+            openCycleMapMenuItem.Click += OpenCycleMapMenuItem_Click!;
+            clearMap.Click += ClearMap_Click!;
 
             // Настройки для компонента GMap
             gmap.Bearing = 0;
-            // Перетаскивание правой кнопки мыши
+            // Перетаскивание карты
             gmap.CanDragMap = true;
             // Перетаскивание карты левой кнопкой мыши
             gmap.DragButton = MouseButtons.Left;
@@ -94,7 +78,7 @@ namespace Umnik
             // Убрать красный крестик по центру
             gmap.ShowCenter = false;
 
-            // Чья карта используется
+            // Чья карта используется по умолчанию
             gmap.MapProvider = GMap.NET.MapProviders.GMapProviders.GoogleMap;
 
             // Загрузка этой точки на карте
@@ -161,34 +145,27 @@ namespace Umnik
 
                 if (OPD.ShowDialog() == DialogResult.OK)
                 {
-                    using (StreamReader reader = new StreamReader(OPD.FileName, Encoding.GetEncoding(1251)))
+                    try
                     {
-                        try
+                        using (StreamReader reader = new StreamReader(OPD.FileName, Encoding.UTF8))
                         {
+
                             while (!reader.EndOfStream)
                             {
                                 string[] coordinates = reader.ReadLine().Split(';');
                                 points.Add(new CPoint(double.Parse(coordinates[0]), double.Parse(coordinates[1])));
                             }
+
                         }
-                        catch
-                        {
-                            MessageBox.Show("Ошибка чтения текстового файла", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                            return;
-                        }
-                        MessageBox.Show("Данные успешно прочитаны");
                     }
+                    catch
+                    {
+                        MessageBox.Show("Ошибка чтения текстового файла", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        return;
+                    }
+                    MessageBox.Show("Данные успешно прочитаны");
                 }
             }
-
-            // Пока пусть закоментированно будет
-            //// Проверка самого себя - что всё работает
-            //FileStream fileStream = new FileStream(@"Routes\проверочный.txt", FileMode.Open, FileAccess.Write);
-            //StreamWriter streamWriter = new StreamWriter(fileStream, Encoding.GetEncoding(1251));
-
-            //for (int i = 0; i < points.Count; i++)
-            //    streamWriter.WriteLine(points[i].X + ";" + points[i].Y);
-            //streamWriter.Close();
         }
 
         public static double GetDouble(string value, double defaultValue)
@@ -302,12 +279,6 @@ namespace Umnik
         }
 
         // Смена поставщика карт
-        void YandexMenuItem_Click(object sender, EventArgs e)
-        {
-            gmap.MapProvider = GMapProviders.YandexMap;
-            gmap.Zoom = 10;
-        }
-
         void GoogleMenuItem_Click(object sender, EventArgs e)
         {
             gmap.MapProvider = GMapProviders.GoogleMap;
@@ -672,6 +643,7 @@ namespace Umnik
             }
         }
 
+        // Очищаем текстбоксы
         private void ClearTextBoxes()
         {
             if (txtLatY1.Text.Length != 0 &&
@@ -702,6 +674,7 @@ namespace Umnik
                 textBoxesIsNotNull = false;
             }
         }
+
         // Очистка слоя маршрутов
         private void CleanRouteLayer(object sender, EventArgs e)
         {
