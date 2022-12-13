@@ -185,11 +185,13 @@ namespace Umnik
         }
 
 
-        GMapOverlay ListOfXML = new GMapOverlay("XML");
-        List<CPoint> ListWithPointsFromXML = new List<CPoint>();
+        GMapRoute routesOfXML = new GMapRoute("XML");
+        GMapOverlay overlayOfXML = new GMapOverlay();
+        List<CPoint> ListWithCPointsFromXML = new List<CPoint>();
+        List<PointLatLng> ListWithPointLatLngXML = new List<PointLatLng>();
         private void ShowMarksOnMap(object sender, EventArgs e)
         {
-            gmap.Overlays.Add(ListOfXML);
+            gmap.Overlays.Add(overlayOfXML);
 
             // Создали документ
             XmlDocument xml = new XmlDocument();
@@ -204,9 +206,9 @@ namespace Umnik
             foreach (XmlElement xnode in nl)
             {
                 CPoint cPoint = new CPoint();
-
                 cPoint.X = GetDouble(xnode.GetAttribute("lat"), 0);
                 cPoint.Y = GetDouble(xnode.GetAttribute("lon"), 0);
+                PointLatLng pointLatLng = new PointLatLng(cPoint.X, cPoint.Y);
 
                 // У каждого узла смотрим его поля
                 foreach (XmlNode childnode in xnode.ChildNodes)
@@ -215,24 +217,19 @@ namespace Umnik
                         cPoint.Ele = GetDouble(childnode.InnerText, 0);
                 }
 
-                ListWithPointsFromXML.Add(cPoint);
+                ListWithCPointsFromXML.Add(cPoint);
+                ListWithPointLatLngXML.Add(pointLatLng);
             }
-
-            for (int i = 0; i < ListWithPointsFromXML.Count; i++)
-            {
-                GMarkerGoogle marker = new GMarkerGoogle(new PointLatLng
-                    (ListWithPointsFromXML[i].X, ListWithPointsFromXML[i].Y), GMarkerGoogleType.blue_dot);
-                marker.ToolTip = new GMapRoundedToolTip(marker);
-                marker.ToolTipText = ListWithPointsFromXML[i].Ele.ToString();
-                ListOfXML.Markers.Add(marker);
-            }
+            routesOfXML = new GMapRoute(ListWithPointLatLngXML, "XMLKislovodskRoute");
+            overlayOfXML.Routes.Add(routesOfXML);
         }
 
         // Метод очистки маркеров из XML
         private void ClearMarksFromMap(object sender, EventArgs e)
         {
-            ListOfXML.Clear();
-            ListWithPointsFromXML.Clear();
+            overlayOfXML.Clear();
+            ListWithCPointsFromXML.Clear();
+            ListWithPointLatLngXML.Clear();
         }
 
         private void Map_FormClosing(object sender, FormClosingEventArgs e)
@@ -298,7 +295,7 @@ namespace Umnik
 
             //PositionsClick.Clear();
             //ListOfXML.Clear();
-            ListWithPointsFromXML.Clear();
+            ListWithCPointsFromXML.Clear();
 
             RouteListClick.Clear();
             //RouteClick.Clear();
